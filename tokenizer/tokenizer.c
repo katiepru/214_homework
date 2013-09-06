@@ -60,6 +60,17 @@ TokenizerT *TKCreate(char *separators, char *ts) {
  */
 
 void TKDestroy(TokenizerT *tk) {
+    if(tk->separators != NULL)
+    {
+        free(tk->separators);
+    }
+
+    if(tk->ts != NULL)
+    {
+        free(tk->ts);
+    }
+
+    free(tk);
 }
 
 /*
