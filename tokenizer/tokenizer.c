@@ -9,7 +9,8 @@
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
 
-typedef struct TokenizerT_ {
+typedef struct TokenizerT_
+{
 	char *separators;
 	char *ts;
 } TokenizerT;
@@ -28,7 +29,8 @@ typedef struct TokenizerT_ {
  * You need to fill in this function as part of your implementation.
  */
 
-TokenizerT *TKCreate(char *separators, char *ts) {
+TokenizerT *TKCreate(char *separators, char *ts)
+{
 	TokenizerT *t = malloc(sizeof(TokenizerT));
 	int i;
 	if(t == NULL)
@@ -59,7 +61,8 @@ TokenizerT *TKCreate(char *separators, char *ts) {
  * You need to fill in this function as part of your implementation.
  */
 
-void TKDestroy(TokenizerT *tk) {
+void TKDestroy(TokenizerT *tk)
+{
     if(tk->separators != NULL)
     {
         free(tk->separators);
@@ -85,7 +88,8 @@ void TKDestroy(TokenizerT *tk) {
  * You need to fill in this function as part of your implementation.
  */
 
-char *TKGetNextToken(TokenizerT *tk) {
+char *TKGetNextToken(TokenizerT *tk)
+{
 
   return NULL;
 }
@@ -98,7 +102,7 @@ char *TKGetNextToken(TokenizerT *tk) {
  * Each token should be printed on a separate line.
  */
 
-int main(int argc, char **argv) {
-
+int main(int argc, char **argv)
+{
   return 0;
 }
