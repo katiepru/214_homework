@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
@@ -16,7 +17,7 @@ typedef struct TokenizerT_ {
 /*
  * TKCreate creates a new TokenizerT object for a given set of separator
  * characters (given as a string) and a token stream (given as a string).
- * 
+ *
  * TKCreate should copy the two arguments so that it is not dependent on
  * them staying immutable after returning.  (In the future, this may change
  * to increase efficiency.)
@@ -35,26 +36,18 @@ TokenizerT *TKCreate(char *separators, char *ts) {
 		/*Malloc failed*/
 		return NULL;
 	}
-	
+
 	t->separators = malloc(sizeof(*separators));
 	t->ts = malloc(sizeof(*ts));
-	if(t->ts == NULL || t->separators == NULL)
-	{
-		/*Malloc failed*/
-		return NULL;
-	}
 
-	/*Copy separator*/
-	for(i = 0; i < sizeof(separators)/sizeof(char); ++i)
-	{
-		t->separators[i] = separators[i];
-	}
+    if(t->separators == NULL || t->ts == NULL)
+    {
+        /*Malloc failed*/
+        return NULL;
+    }
 
-	/*Copy ts*/
-	for(i = 0; i < sizeof(ts)/sizeof(char); ++i)
-	{
-		t->ts[i] = ts[i];
-	}
+    strcpy(t->separators, separators);
+    strcpy(t->ts, ts);
 
 	return t;
 }
