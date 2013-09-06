@@ -2,13 +2,16 @@
  * tokenizer.c
  */
 #include <stdio.h>
+#include <stdlib.h>
 
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
 
-struct TokenizerT_ {
-};
+typedef struct TokenizerT_ {
+	char *separators;
+	char *ts;
+} TokenizerT;
 
 /*
  * TKCreate creates a new TokenizerT object for a given set of separator
@@ -25,8 +28,35 @@ struct TokenizerT_ {
  */
 
 TokenizerT *TKCreate(char *separators, char *ts) {
+	TokenizerT *t = malloc(sizeof(TokenizerT));
+	int i;
+	if(t == NULL)
+	{
+		/*Malloc failed*/
+		return NULL;
+	}
+	
+	t->separators = malloc(sizeof(*separators));
+	t->ts = malloc(sizeof(*ts));
+	if(t->ts == NULL || t->separators == NULL)
+	{
+		/*Malloc failed*/
+		return NULL;
+	}
 
-  return NULL;
+	/*Copy separator*/
+	for(i = 0; i < sizeof(separators)/sizeof(char); ++i)
+	{
+		t->separators[i] = separators[i];
+	}
+
+	/*Copy ts*/
+	for(i = 0; i < sizeof(ts)/sizeof(char); ++i)
+	{
+		t->ts[i] = ts[i];
+	}
+
+	return t;
 }
 
 /*
