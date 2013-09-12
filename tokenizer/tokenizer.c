@@ -104,5 +104,21 @@ char *TKGetNextToken(TokenizerT *tk)
 
 int main(int argc, char **argv)
 {
-  return 0;
+	TokenizerT *tk;
+	char *token;
+
+	/*Check that number of args is correct*/
+	if(argc != 2)
+	{
+		fprintf(stderr, "Wrong number of arguements\n");
+		return 1;
+	}
+
+	tk = TKCreate(argv[1], argv[2]);
+	while((token = TKGetNextToken(tk)) != NULL)
+	{
+		printf("%s\n", token);
+	}
+
+ 	return 0;
 }
