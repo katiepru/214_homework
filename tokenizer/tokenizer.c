@@ -16,6 +16,24 @@ typedef struct TokenizerT_
 } TokenizerT;
 
 /*
+ * Calculate length of string, taking care of backslashes accordingly
+ */
+int calcStringLen(char *s)
+{
+    int len = 0;
+    int i;
+
+    for(i = 0; i < strlen(s); ++i)
+    {
+        if(!(s[i] == '/' && s[i+1] != '/'))
+        {
+            len++;
+        }
+    }
+    return len;
+}
+
+/*
  * TKCreate creates a new TokenizerT object for a given set of separator
  * characters (given as a string) and a token stream (given as a string).
  *
@@ -31,8 +49,10 @@ typedef struct TokenizerT_
 
 TokenizerT *TKCreate(char *separators, char *ts)
 {
-	TokenizerT *t = malloc(sizeof(TokenizerT));
-	int i;
+	TokenizerT *t;
+	int len = calcStringLen(separators);
+
+    t = malloc(sizeof(TokenizerT));
 	if(t == NULL)
 	{
 		/*Malloc failed*/
