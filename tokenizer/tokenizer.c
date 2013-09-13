@@ -11,8 +11,8 @@
 
 typedef struct TokenizerT_
 {
-	char *separators;
-	char *ts;
+    char *separators;
+    char *ts;
 } TokenizerT;
 
 /*
@@ -49,18 +49,18 @@ int calcStringLen(char *s)
 
 TokenizerT *TKCreate(char *separators, char *ts)
 {
-	TokenizerT *t;
-	int len = calcStringLen(separators);
+    TokenizerT *t;
+    int len = calcStringLen(separators);
 
     t = malloc(sizeof(TokenizerT));
-	if(t == NULL)
-	{
-		/*Malloc failed*/
-		return NULL;
-	}
+    if(t == NULL)
+    {
+        /*Malloc failed*/
+        return NULL;
+    }
 
-	t->separators = malloc(sizeof(*separators));
-	t->ts = malloc(sizeof(*ts));
+    t->separators = malloc(sizeof(*separators));
+    t->ts = malloc(sizeof(*ts));
 
     if(t->separators == NULL || t->ts == NULL)
     {
@@ -71,7 +71,7 @@ TokenizerT *TKCreate(char *separators, char *ts)
     strcpy(t->separators, separators);
     strcpy(t->ts, ts);
 
-	return t;
+    return t;
 }
 
 /*
@@ -124,21 +124,21 @@ char *TKGetNextToken(TokenizerT *tk)
 
 int main(int argc, char **argv)
 {
-	TokenizerT *tk;
-	char *token;
+    TokenizerT *tk;
+    char *token;
 
-	/*Check that number of args is correct*/
-	if(argc != 2)
-	{
-		fprintf(stderr, "Wrong number of arguements\n");
-		return 1;
-	}
+    /*Check that number of args is correct*/
+    if(argc != 2)
+    {
+        fprintf(stderr, "Wrong number of arguements\n");
+        return 1;
+    }
 
-	tk = TKCreate(argv[1], argv[2]);
-	while((token = TKGetNextToken(tk)) != NULL)
-	{
-		printf("%s\n", token);
-	}
+    tk = TKCreate(argv[1], argv[2]);
+    while((token = TKGetNextToken(tk)) != NULL)
+    {
+        printf("%s\n", token);
+    }
 
- 	return 0;
+    return 0;
 }
