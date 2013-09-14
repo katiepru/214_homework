@@ -11,8 +11,8 @@
 
 typedef struct TokenizerT_
 {
-    char *separators;
-    char *ts;
+    char *tokens;
+    int ntokens;
 } TokenizerT;
 
 /*
@@ -33,6 +33,118 @@ int calcStringLen(char *s)
     return len;
 }
 
+char findSpecial(char c)
+{
+    switch(c)
+    {
+        case 'n':
+            return '\n';
+        case 't':
+            return '\t';
+        case 'v':
+            return '\v';
+        case 'b':
+            return '\b';
+        case 'r':
+            return '\r';
+        case 'f':
+            return '\f';
+        case 'a':
+            return '\a';
+    }
+    return c;
+}
+
+
+/*
+ * replaceSpecial takes a string and returns a copy of it with any special
+ * escape sequences replaced by their ASCII value
+ */
+char* replaceSpecial(char* orig)
+{
+    char c;
+    int i = 0;
+    int new_len = 0;
+    int orig_len = strlen(orig);
+    char *parsed = malloc(sizeof(char)*(orig_len+1));
+
+    for (c = orig[0]; c != '\0'; c=orig[++i])
+    {
+        if (c == '\\')
+        {
+            parsed[new_len] = findSpecial(orig[++i]);
+        }
+        else
+        {
+            parsed[new_len] = orig[i];
+        }
+        new_len++;
+    }
+    parsed[++new_len] = '\0';
+    parsed = realloc(parsed, sizeof(char) * new_len);
+    return parsed;
+}
+
+char* tokenize(TokenizerT* t, char* delim, char* str)
+{
+    int i;
+    char skip = 0;
+    int ntokens;
+    char* tokens;
+    int len_tokens;
+    char ascii_bools[128];
+
+    memset(ascii_bools, 0, 128);
+
+    for (i = 0; i < strlen(delim); ++i)
+    {
+        ascii_bools[delim[i]] = 1;
+    }
+
+    tokens = malloc(sizeof(char) * strlen(str));
+
+    for (i = 0; i < strlen(str); ++i)
+    {
+        if (ascii_bools[str[i]])
+        {
+            /* only put a null byte if we have some tokens */
+            if (len_tokens)
+            {
+                tokens[len_tokens++] = '\0';
+            }
+            while(ascii_bools[str[i]] && str[i] != '\0')
+            {
+                i++;
+            }
+            if (str[i] != '\0')
+            {
+                ntokens++;
+            }
+        }
+        else
+        {
+            if (!ntokens)
+            {
+                ntokens++;
+            }
+            tokens[len_tokens++] = str[i];
+        }
+    }
+
+    if (len_tokens)
+    {
+        tokens[++len_tokens] = '\0';
+        tokens = realloc(tokens, len_tokens);
+    }
+    else
+    {
+        tokens[0] = '\0';
+        realloc(tokens, 1);
+    }
+    t->tokens = tokens;
+    t->ntokens = ntokens;
+}
+
 /*
  * TKCreate creates a new TokenizerT object for a given set of separator
  * characters (given as a string) and a token stream (given as a string).
@@ -50,7 +162,8 @@ int calcStringLen(char *s)
 TokenizerT *TKCreate(char *separators, char *ts)
 {
     TokenizerT *t;
-    int len = calcStringLen(separators);
+    char *separators_p;
+    char *ts_p;
 
     t = malloc(sizeof(TokenizerT));
     if(t == NULL)
@@ -59,17 +172,15 @@ TokenizerT *TKCreate(char *separators, char *ts)
         return NULL;
     }
 
-    t->separators = malloc(sizeof(*separators));
-    t->ts = malloc(sizeof(*ts));
+    separators_p = replaceSpecial(separators);
+    ts_p = replaceSpecial(ts);
 
-    if(t->separators == NULL || t->ts == NULL)
+    if (separators_p == NULL || ts_p == NULL)
     {
-        /*Malloc failed*/
         return NULL;
     }
 
-    strcpy(t->separators, separators);
-    strcpy(t->ts, ts);
+    tokenize(t, separators_p, ts_p);
 
     return t;
 }
@@ -83,14 +194,9 @@ TokenizerT *TKCreate(char *separators, char *ts)
 
 void TKDestroy(TokenizerT *tk)
 {
-    if(tk->separators != NULL)
+    if(tk->tokens != NULL)
     {
-        free(tk->separators);
-    }
-
-    if(tk->ts != NULL)
-    {
-        free(tk->ts);
+        free(tk->tokens);
     }
 
     free(tk);
