@@ -12,7 +12,8 @@
 typedef struct TokenizerT_
 {
     char *tokens;
-    int ntokens;
+    int index;
+    int len_tokens;
 } TokenizerT;
 
 /*
@@ -85,64 +86,51 @@ char* replaceSpecial(char* orig)
     return parsed;
 }
 
-char* tokenize(TokenizerT* t, char* delim, char* str)
+void tokenize(TokenizerT* t, char* delim, char* str)
 {
     int i;
-    char skip = 0;
-    int ntokens;
     char* tokens;
-    int len_tokens;
+    int len_tokens = 0;
     char ascii_bools[128];
 
     memset(ascii_bools, 0, 128);
 
     for (i = 0; i < strlen(delim); ++i)
     {
-        ascii_bools[delim[i]] = 1;
+        ascii_bools[(int)delim[i]] = 1;
     }
 
     tokens = malloc(sizeof(char) * strlen(str));
 
     for (i = 0; i < strlen(str); ++i)
     {
-        if (ascii_bools[str[i]])
+        if (ascii_bools[(int)str[i]])
         {
             /* only put a null byte if we have some tokens */
             if (len_tokens)
             {
                 tokens[len_tokens++] = '\0';
             }
-            while(ascii_bools[str[i]] && str[i] != '\0')
+            while(ascii_bools[(int)str[i+1]] && str[i+1] != '\0')
             {
                 i++;
-            }
-            if (str[i] != '\0')
-            {
-                ntokens++;
             }
         }
         else
         {
-            if (!ntokens)
-            {
-                ntokens++;
-            }
             tokens[len_tokens++] = str[i];
         }
     }
 
-    if (len_tokens)
+    if (tokens[len_tokens] != '\0')
     {
-        tokens[++len_tokens] = '\0';
-        tokens = realloc(tokens, len_tokens);
+        tokens[len_tokens] = '\0';
     }
-    else
-    {
-        tokens[0] = '\0';
-        realloc(tokens, 1);
-    }
+    tokens = realloc(tokens, len_tokens);
+
     t->tokens = tokens;
-    t->ntokens = ntokens;
+    t->len_tokens = len_tokens;
+    t->index = 0;
 }
 
 /*
@@ -234,13 +222,14 @@ int main(int argc, char **argv)
     char *token;
 
     /*Check that number of args is correct*/
-    if(argc != 2)
+    if(argc != 3)
     {
         fprintf(stderr, "Wrong number of arguements\n");
         return 1;
     }
 
     tk = TKCreate(argv[1], argv[2]);
+
     while((token = TKGetNextToken(tk)) != NULL)
     {
         printf("%s\n", token);
