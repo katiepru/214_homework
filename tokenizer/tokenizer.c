@@ -169,6 +169,8 @@ TokenizerT *TKCreate(char *separators, char *ts)
     }
 
     tokenize(t, separators_p, ts_p);
+    free(separators_p);
+    free(ts_p);
 
     return t;
 }
@@ -241,7 +243,10 @@ int main(int argc, char **argv)
     while((token = TKGetNextToken(tk)) != NULL)
     {
         printf("%s\n", token);
+        free(token);
     }
+
+    TKDestroy(tk);
 
     return 0;
 }
