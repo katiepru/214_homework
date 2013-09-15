@@ -61,29 +61,31 @@ char findSpecial(char c)
  * replaceSpecial takes a string and returns a copy of it with any special
  * escape sequences replaced by their ASCII value
  */
-char* replaceSpecial(char* orig)
+char* replaceSpecial(char* str)
 {
     char c;
     int i = 0;
     int new_len = 0;
-    int orig_len = strlen(orig);
-    char *parsed = malloc((sizeof(char)*orig_len)+1);
 
-    for (c = orig[0]; c != '\0'; c=orig[++i])
+    for (c = str[0]; c != '\0'; c=str[++i])
     {
         if (c == '\\')
         {
-            parsed[new_len] = findSpecial(orig[++i]);
+            str[new_len] = findSpecial(str[++i]);
         }
         else
         {
-            parsed[new_len] = orig[i];
+            str[new_len] = str[i];
         }
         new_len++;
     }
-    parsed[new_len] = '\0';
-    parsed = realloc(parsed, sizeof(char) * new_len);
-    return parsed;
+
+    if (new_len < i)
+    {
+        str[new_len] = '\0';
+        str = realloc(str, sizeof(char) * new_len);
+    }
+    return str;
 }
 
 void tokenize(TokenizerT* t, char* delim, char* str)
@@ -160,13 +162,9 @@ TokenizerT *TKCreate(char *separators, char *ts)
         return NULL;
     }
 
-    separators_p = replaceSpecial(separators);
-    ts_p = replaceSpecial(ts);
-
-    if (separators_p == NULL || ts_p == NULL)
-    {
-        return NULL;
-    }
+    separators_p = replaceSpecial(strcpy(malloc(strlen(separators)+1),
+                                         separators));
+    ts_p = replaceSpecial(strcpy(malloc(strlen(ts)+1), ts));
 
     tokenize(t, separators_p, ts_p);
     free(separators_p);
