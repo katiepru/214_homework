@@ -67,7 +67,7 @@ char* replaceSpecial(char* orig)
     int i = 0;
     int new_len = 0;
     int orig_len = strlen(orig);
-    char *parsed = malloc(sizeof(char)*(orig_len+1));
+    char *parsed = malloc((sizeof(char)*orig_len)+1);
 
     for (c = orig[0]; c != '\0'; c=orig[++i])
     {
@@ -81,7 +81,7 @@ char* replaceSpecial(char* orig)
         }
         new_len++;
     }
-    parsed[++new_len] = '\0';
+    parsed[new_len] = '\0';
     parsed = realloc(parsed, sizeof(char) * new_len);
     return parsed;
 }
@@ -100,7 +100,7 @@ void tokenize(TokenizerT* t, char* delim, char* str)
         ascii_bools[(int)delim[i]] = 1;
     }
 
-    tokens = malloc(sizeof(char) * strlen(str));
+    tokens = malloc((sizeof(char) * strlen(str))+1);
 
     for (i = 0; i < strlen(str); ++i)
     {
