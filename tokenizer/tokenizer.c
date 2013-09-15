@@ -240,6 +240,12 @@ int main(int argc, char **argv)
 
     tk = TKCreate(argv[1], argv[2]);
 
+    if (tk == NULL)
+    {
+        fprintf(stderr, "TKCreate returned null.\n");
+        return 1;
+    }
+
     while((token = TKGetNextToken(tk)) != NULL)
     {
         printf("%s\n", token);
