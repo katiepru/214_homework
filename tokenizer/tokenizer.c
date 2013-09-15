@@ -182,11 +182,7 @@ TokenizerT *TKCreate(char *separators, char *ts)
 
 void TKDestroy(TokenizerT *tk)
 {
-    if(tk->tokens != NULL)
-    {
-        free(tk->tokens);
-    }
-
+    free(tk->tokens);
     free(tk);
 }
 
