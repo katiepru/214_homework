@@ -200,8 +200,20 @@ void TKDestroy(TokenizerT *tk)
 
 char *TKGetNextToken(TokenizerT *tk)
 {
+    char *token;
+    int length;
 
-  return NULL;
+    if(tk->index >= tk->len_tokens)
+    {
+        return NULL;
+    }
+
+    length = strlen(&(tk->tokens[tk->index]));
+    token = malloc(length * sizeof(char));
+    strcpy(token, &(tk->tokens[tk->index]));
+    tk->index += length + 1;
+
+    return token;
 }
 
 /*
