@@ -228,6 +228,7 @@ int main(int argc, char **argv)
 {
     TokenizerT *tk;
     char *token;
+    int i;
 
     /*Check that number of args is correct*/
     if(argc != 3)
@@ -246,7 +247,23 @@ int main(int argc, char **argv)
 
     while((token = TKGetNextToken(tk)) != NULL)
     {
-        printf("%s\n", token);
+        for(i = 0; i < strlen(token); ++i)
+        {
+            switch(token[i])
+            {
+                case '\n':
+                case '\t':
+                case '\v':
+                case '\b':
+                case '\r':
+                case '\a':
+                    printf("[0x%.2x]",token[i]);
+                    break;
+                default:
+                    printf("%c", token[i]);
+            }
+        }
+        printf("\n");
         free(token);
     }
 
