@@ -52,6 +52,9 @@ char findSpecial(char c)
             return '\f';
         case 'a':
             return '\a';
+		case '\0':
+			fprintf(stderr, "Bad input string. Cannot end in singular backslash.\n");
+			exit(2);
     }
     return c;
 }
