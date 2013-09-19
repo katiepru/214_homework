@@ -126,7 +126,7 @@ void tokenize(TokenizerT* t, char* delim, char* str)
     }
 
     tokens[len_tokens] = '\0';
-    tokens = realloc(tokens, len_tokens);
+    tokens = realloc(tokens, sizeof(char)*(len_tokens+1));
 
     t->tokens = tokens;
     t->len_tokens = len_tokens;
@@ -209,7 +209,7 @@ char *TKGetNextToken(TokenizerT *tk)
     }
 
     length = strlen(&(tk->tokens[tk->index]));
-    token = malloc(length * sizeof(char));
+    token = malloc((length * sizeof(char))+1);
     strcpy(token, &(tk->tokens[tk->index]));
     tk->index += length + 1;
 
