@@ -16,23 +16,13 @@ typedef struct TokenizerT_
     int len_tokens;
 } TokenizerT;
 
-/*
- * Calculate length of string, taking care of backslashes accordingly
- */
-int calcStringLen(char *s)
-{
-    int len = 0;
-    int i;
 
-    for(i = 0; i < strlen(s); ++i)
-    {
-        if(!(s[i] == '/' && s[i+1] != '/'))
-        {
-            len++;
-        }
-    }
-    return len;
-}
+/*
+ * findSpecial takes a character and returns it's corresponding
+ * backslash-escaped value if one exists. Otherwise just returns the original
+ * input. If the input character is a null byte, this indicates there was a
+ * trailing backslash and causes the program to exit with an error message.
+ */
 
 char findSpecial(char c)
 {
@@ -64,6 +54,7 @@ char findSpecial(char c)
  * replaceSpecial takes a string and returns a copy of it with any special
  * escape sequences replaced by their ASCII value
  */
+
 char* replaceSpecial(char* str)
 {
     char c;
@@ -90,6 +81,13 @@ char* replaceSpecial(char* str)
     }
     return str;
 }
+
+
+/*
+ * Given a pointer to a TokenizerT struct and two strings, tokenize tokenizes
+ * the second string using the first as a set of delimiters and stores the
+ * result in the TokenizerT struct.
+ */
 
 void tokenize(TokenizerT* t, char* delim, char* str)
 {
@@ -138,6 +136,7 @@ void tokenize(TokenizerT* t, char* delim, char* str)
     t->index = 0;
 }
 
+
 /*
  * TKCreate creates a new TokenizerT object for a given set of separator
  * characters (given as a string) and a token stream (given as a string).
@@ -175,6 +174,7 @@ TokenizerT *TKCreate(char *separators, char *ts)
 
     return t;
 }
+
 
 /*
  * TKDestroy destroys a TokenizerT object.  It should free all dynamically
@@ -218,6 +218,7 @@ char *TKGetNextToken(TokenizerT *tk)
 
     return token;
 }
+
 
 /*
  * main will have two string arguments (in argv[1] and argv[2]).
