@@ -125,10 +125,7 @@ void tokenize(TokenizerT* t, char* delim, char* str)
         }
     }
 
-    if (tokens[len_tokens] != '\0')
-    {
-        tokens[len_tokens] = '\0';
-    }
+    tokens[len_tokens] = '\0';
     tokens = realloc(tokens, len_tokens);
 
     t->tokens = tokens;
