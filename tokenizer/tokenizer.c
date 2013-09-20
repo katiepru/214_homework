@@ -42,9 +42,6 @@ char findSpecial(char c)
             return '\f';
         case 'a':
             return '\a';
-		case '\0':
-			fprintf(stderr, "Bad input string. Cannot end in singular backslash.\n");
-			exit(2);
     }
     return c;
 }
@@ -65,7 +62,12 @@ char* replaceSpecial(char* str)
     {
         if (c == '\\')
         {
-            str[new_len] = findSpecial(str[++i]);
+            /* check for a trailing backslash and break out */
+            if (str[++i] == '\0')
+            {
+                break;
+            }
+            str[new_len] = findSpecial(str[i]);
         }
         else
         {
@@ -77,7 +79,7 @@ char* replaceSpecial(char* str)
     if (new_len < i)
     {
         str[new_len] = '\0';
-        str = realloc(str, sizeof(char) * new_len);
+        str = realloc(str, sizeof(char) * (new_len + 1));
     }
     return str;
 }
@@ -258,6 +260,7 @@ int main(int argc, char **argv)
                 case '\b':
                 case '\r':
                 case '\a':
+                case '\"':
                     printf("[0x%.2x]",token[i]);
                     break;
                 default:
