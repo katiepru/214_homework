@@ -1,0 +1,51 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[margin=.5in]{geometry}
+
+\begin{document}
+
+\noindent Joshua Matthews \& Kaitlin Poskaitis
+
+\noindent Systems Programming
+
+\noindent String Tokenizer
+
+\section{Design}
+When invoked with two string pointers as input, TKCreate tokenizes the second
+string by replacing any characters present in the first string with null bytes.
+The result is then stored in a struct along with and index and total string
+length, so that TKGetNextToken knows where to start printing from and when it
+has truly reached the end of the string.
+
+\subsection{Special Characters}
+Before tokenizing both strings are preprocessed and any special
+backslash-escaped characters are replaced by their corresponding ASCII values.
+
+\subsection{Checking Delimiters}
+Rather than check each character in the delimiters string for a match to each
+character in the string to be tokenized, an array of booleans (really just
+chars) of length 128 is created, and any characters in the delimiters string has
+it's corresponding ASCII value in the array set to TRUE. This is then used to
+check if a given character in the tokenized string should act as a delimiter.
+
+\section{Efficiency}
+\subsection{TKCreate}
+Let $n$ equal the combined length of both strings. The tokenizer first processes
+both strings to replace special characters, adding up to one $O(n)$ operation.
+It then maps the delimiters to the array of ASCII booleans and uses that to
+tokenize the second string. Since the array makes checking if a character is a
+delimiter a constant-time operation, this adds up to another $O(n)$ operation.
+The final efficiency is therefore $O(n + n) = O(2n) = O(n)$.
+
+\subsection{TKGetNextToken}
+First checks that we have not already reached the end of the string, and if not
+then copies and returns the string pointed to by the current index, changes that
+index to just past the terminating null byte to point at the next token. The
+string copy operation is dependent on the length of the string to copied, so
+efficiency is $O(n)$.
+
+\subsection{TKDestroy}
+First frees the malloced memory storing the delimited string, and then the
+encompassing Struct. Both are constant-time operations, efficiency is $O(1)$.
+
+\end{document}
