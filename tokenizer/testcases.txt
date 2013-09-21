@@ -1,0 +1,26 @@
+Shell Input: "" ""
+Program Gets: "" ""
+Expected Output:
+
+Shell Input: "" "hello world"
+Program Gets: "" "hello world"
+Expected Output: hello world
+
+Shell Input: "a" "helloaworld"
+Program Gets: "a" "helloaworld"
+Expected Output: hello
+                 world
+
+Shell Input: "\\a" "hello\\aworld\\nagain"
+Program Gets: "\a" "hello\aworld\nagain"
+Expected Output: hello
+                 world[0x0a]again
+
+Shell Input: "\\t\\" "goodbye\\tuniverse\\"
+Program Gets: "\t\" "goodbye\tuniverse\"
+Expected Output: goodbye
+                 universe
+
+Shell Input: "a" "aaaaaaaaaaaaaaaa"
+Program Gets: "a" "aaaaaaaaaaaaaaaa"
+Expected Output:
