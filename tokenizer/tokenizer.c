@@ -1,5 +1,6 @@
 /*
  * tokenizer.c
+ * Josh Matthews & Katie Poskaitis
  */
 #include <stdio.h>
 #include <stdlib.h>
