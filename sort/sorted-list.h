@@ -7,30 +7,6 @@
 #include <stdlib.h>
 
 /*
- * Sorted list type.  You need to fill in the type as part of your implementation.
- */
-struct SortedList
-{
-    void* data;
-    SortedList next;
-};
-typedef struct SortedList* SortedListPtr;
-
-
-/*
- * Iterator type for user to "walk" through the list item by item, from
- * beginning to end.  You need to fill in the type as part of your implementation.
- */
-struct SortedListIterator
-{
-    CompareFuncT compare;
-    SortedListIteratorPtr head;
-    SortedListIteratorPtr index;
-};
-typedef struct SortedListIterator* SortedListIteratorPtr;
-
-
-/*
  * When your sorted list is used to store objects of some type, since the
  * type is opaque to you, you will need a comparator function to order
  * the objects in your sorted list.
@@ -45,6 +21,38 @@ typedef struct SortedListIterator* SortedListIteratorPtr;
  */
 
 typedef int (*CompareFuncT)(void *, void *);
+
+/*
+ * Sorted list node type. Used to store the idividual nodes of a sorted list.
+ */
+struct SortedListNode
+{
+    void* data;
+    struct SortedListNode* next;
+};
+typedef struct SortedListNode* SortedListNodePtr;
+
+
+/*
+ * Sorted list type.  You need to fill in the type as part of your implementation.
+ */
+struct SortedList
+{
+    CompareFuncT compare;
+    SortedListNodePtr head;
+};
+typedef struct SortedList* SortedListPtr;
+
+
+/*
+ * Iterator type for user to "walk" through the list item by item, from
+ * beginning to end.  You need to fill in the type as part of your implementation.
+ */
+struct SortedListIterator
+{
+    SortedListNodePtr index;
+};
+typedef struct SortedListIterator* SortedListIteratorPtr;
 
 
 /*
