@@ -11,6 +11,8 @@
  */
 struct SortedList
 {
+    void* data;
+    SortedList next;
 };
 typedef struct SortedList* SortedListPtr;
 
@@ -21,6 +23,9 @@ typedef struct SortedList* SortedListPtr;
  */
 struct SortedListIterator
 {
+    CompareFuncT compare;
+    SortedListIteratorPtr head;
+    SortedListIteratorPtr index;
 };
 typedef struct SortedListIterator* SortedListIteratorPtr;
 
@@ -46,7 +51,7 @@ typedef int (*CompareFuncT)(void *, void *);
  * SLCreate creates a new, empty sorted list.  The caller must provide
  * a comparator function that can be used to order objects that will be
  * kept in the list.
- * 
+ *
  * If the function succeeds, it returns a (non-NULL) SortedListT object.
  * Else, it returns NULL.
  *
