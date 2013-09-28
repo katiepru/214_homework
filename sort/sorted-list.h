@@ -27,6 +27,7 @@ typedef int (*CompareFuncT)(void *, void *);
  */
 struct SortedListNode
 {
+    int references;
     void* data;
     struct SortedListNode* next;
 };
@@ -143,5 +144,24 @@ void SLDestroyIterator(SortedListIteratorPtr iter);
  */
 
 void *SLNextItem(SortedListIteratorPtr iter);
+
+
+/*
+ * IncNodeRef increments the number of references on a node.
+ */
+void IncNodeRef(SortedListNodePtr);
+
+
+/*
+ * DecNodeRef decrements the number of references on a node and destroys it if
+ * this causes the references to reach 0.
+ */
+void DecNodeRef(SortedListNodePtr);
+
+/*
+ * SLDestroyNode destroys a SortedListNode and returns the value of its next
+ * pointer.
+ */
+SortedListNodePtr SLDestroyNode(SortedListNodePtr);
 
 #endif
