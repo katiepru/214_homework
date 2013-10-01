@@ -136,6 +136,6 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
  */
 void SLDestroyIterator(SortedListIteratorPtr iter)
 {
-    iter->index->references--;
+    DecNodeRef(iter->index);
     free(iter);
 }
