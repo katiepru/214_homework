@@ -120,11 +120,22 @@ SortedListNodePtr SLDestroyNode(SortedListNodePtr node)
 SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 {
     SortedListIteratorPtr iter = malloc(sizeof(struct SortedListIterator));
+
     if(iter == NULL)
     {
+        //Malloc failed
         return NULL;
     }
 
     iter->index = list->head;
     return iter;
+}
+
+/*
+ * Destroys a SortedListIterator
+ */
+void SLDestroyIterator(SortedListIteratorPtr iter)
+{
+    iter->index->references--;
+    free(iter);
 }
