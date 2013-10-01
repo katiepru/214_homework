@@ -139,3 +139,26 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
     DecNodeRef(iter->index);
     free(iter);
 }
+
+/*
+ * Advances iterator and return data at node
+ */
+void *SLNextItem(SortedListIteratorPtr iter)
+{
+    //FIXME: Very naive inplementation
+    SortedListNodePtr tmp = iter->index;
+
+    //Reached end of list
+    if(tmp == NULL)
+    {
+        SLDestroyIterator(iter);
+        return NULL;
+    }
+
+    //Adjust references accordingly
+    iter->index = tmp->next;
+    DecNodeRef(tmp);
+    IncNodeRef(iter->index);
+
+    return iter->index->data;
+}
