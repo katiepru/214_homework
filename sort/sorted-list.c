@@ -113,3 +113,18 @@ SortedListNodePtr SLDestroyNode(SortedListNodePtr node)
 
     return next;
 }
+
+/*
+ * Creates a SortedListIterator that points to the head of a list
+ */
+SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
+{
+    SortedListIteratorPtr iter = malloc(sizeof(struct SortedListIterator));
+    if(iter == NULL)
+    {
+        return NULL;
+    }
+
+    iter->index = list->head;
+    return iter;
+}
