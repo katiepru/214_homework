@@ -52,6 +52,7 @@ typedef struct SortedList* SortedListPtr;
 struct SortedListIterator
 {
     SortedListNodePtr index;
+    SortedListPtr list;
 };
 typedef struct SortedListIterator* SortedListIteratorPtr;
 

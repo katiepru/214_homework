@@ -128,6 +128,7 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
     }
 
     iter->index = list->head;
+    iter->list = list;
     return iter;
 }
 
@@ -145,20 +146,40 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
  */
 void *SLNextItem(SortedListIteratorPtr iter)
 {
-    //FIXME: Very naive inplementation
-    SortedListNodePtr tmp = iter->index;
+    void *curr_val = iter->index->data;
+    SortedListNodePtr tmp;
 
-    //Reached end of list
-    if(tmp == NULL)
+    //Check if we got deleted from list
+    if(iter->index->references == 0)
     {
-        SLDestroyIterator(iter);
-        return NULL;
-    }
+        //Start from head and return first item that is smaller
+        curr_val = iter->index->data;
+        tmp = iter->list->head;
+        while(tmp != NULL &&
+              (*iter->list->compare)(tmp->data, curr_val) > 0)
+        {
+            tmp = tmp->next;
+        }
 
-    //Adjust references accordingly
-    iter->index = tmp->next;
-    DecNodeRef(tmp);
-    IncNodeRef(iter->index);
+        DecNodeRef(iter->index);
+        iter->index = tmp;
+        IncNodeRef(iter->index);
+    }
+    else
+    {
+        //Reached end of list
+        tmp = iter->index->next;
+        if(tmp == NULL)
+        {
+            SLDestroyIterator(iter);
+            return NULL;
+        }
+
+        //Adjust references accordingly
+        iter->index = tmp->next;
+        DecNodeRef(tmp);
+        IncNodeRef(iter->index);
+    }
 
     return iter->index->data;
 }
