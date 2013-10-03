@@ -92,6 +92,7 @@ void DecNodeRef(SortedListNodePtr node)
     node->references--;
     if (node->references <= 0)
     {
+        DecNodeRef(node->next);
         SLDestroyNode(node);
     }
 }
