@@ -182,8 +182,11 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
  */
 void *SLNextItem(SortedListIteratorPtr iter)
 {
-    void *curr_val = iter->index->data;
+    /* Safety check */
+    if(!iter) return NULL;
+
     SortedListNodePtr tmp;
+    void* curr_val;
 
     if(iter->index == NULL)
     {
@@ -200,7 +203,7 @@ void *SLNextItem(SortedListIteratorPtr iter)
     }
 
     //Check if we got deleted from list
-    if(iter->index->references == 0)
+    if(iter->index->references <= 1)
     {
         //Start from head and return first item that is smaller
         curr_val = iter->index->data;
@@ -211,9 +214,17 @@ void *SLNextItem(SortedListIteratorPtr iter)
             tmp = tmp->next;
         }
 
-        DecNodeRef(iter->index);
-        iter->index = tmp;
-        IncNodeRef(iter->index);
+        /* See if we reached the end without finding a smaller object */
+        if(tmp == NULL)
+        {
+            return NULL;
+        }
+        else
+        {
+            DecNodeRef(iter->index);
+            iter->index = tmp;
+            IncNodeRef(iter->index);
+        }
     }
     else
     {
@@ -221,13 +232,12 @@ void *SLNextItem(SortedListIteratorPtr iter)
         tmp = iter->index->next;
         if(tmp == NULL)
         {
-            SLDestroyIterator(iter);
             return NULL;
         }
 
         //Adjust references accordingly
-        iter->index = tmp->next;
-        DecNodeRef(tmp);
+        DecNodeRef(iter->index);
+        iter->index = tmp;
         IncNodeRef(iter->index);
     }
 
