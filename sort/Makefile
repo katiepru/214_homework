@@ -18,4 +18,4 @@ liblist.a : sorted-list.o
 
 clean :
 	@rm -f *.o *.a
-	@rm -f main
+	@rm -f sl
