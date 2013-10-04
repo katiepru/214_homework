@@ -27,14 +27,10 @@ void SLDestroy(SortedListPtr list)
     if(!list) return;
 
     SortedListNodePtr ptr = list->head;
-    SortedListNodePtr next;
 
     while(ptr != NULL)
     {
-        free(ptr->data);
-        next = ptr->next;
-        SLDestroyNode(ptr);
-        ptr=next;
+        ptr = SLDestroyNode(ptr);
     }
 }
 
@@ -150,7 +146,6 @@ SortedListNodePtr SLDestroyNode(SortedListNodePtr node)
 
     next = node->next;
 
-    free(node->data);
     free(node);
 
     return next;
