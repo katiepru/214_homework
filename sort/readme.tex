@@ -1,0 +1,65 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[margin=.5in]{geometry}
+
+\begin{document}
+
+\noindent Joshua Matthews \& Kaitlin Poskaitis
+
+\noindent Systems Programming
+
+\noindent String Tokenizer
+
+\section*{Design}
+\subsection*{Duplicates}
+Attempting to insert a duplicate into the list will not cause an error, but only
+one copy of an item will be allowed in the list at any given time.
+
+\subsection*{Data Ownership}
+The void *s contained in the nodes are assumed to belong to the caller.
+Therefore, if memory is malloced for these, it is the caller's job to free the
+data.
+
+\section*{Efficiency}
+\subsection*{SLCreate}
+This is O(1) as we just malloc the struct and set the compare function.
+
+\subsection*{SLInsert}
+This is O(n) because we start at the head of the list and iterate through until
+we find the right spot. If the node is to be inserted at the end, then we need
+to traverse the entire list.
+
+\subsection*{SLRemove}
+This is also O(n) because we start at the head and traverse the list until we
+find the element to delete or have gone farther than the element can be. At
+worst, the element is smaller than our smallest item, so the entire list gets
+traversed.
+
+\subsection*{SLDestroy}
+This is also O(n) as we must free every node in the list.
+
+\subsection*{SLCreateIterator}
+This is O(1) because we malloc the struct and set its initial values in constant
+time.
+
+\subsection*{SLDestroyIterator}
+This is O(n) because in the worst case you deleted the entire list but the
+iterator is still pointing to the head, so you need to destroy all of the
+following nodes.
+
+\subsection*{SlNextItem}
+This is at worst O(n) because if the node you are looking at got deleted, you go
+back to the head and find where you should be, so you may iterate through the
+whole list to get there.
+
+\subsection*{IncNodeRef}
+This is O(1) since we are incrementing a single value.
+
+\subsection*{DecNodeRef}
+This is O(n) because in the worst case the node you are looking at goes to 0 and
+gets freed, as well as everything after it if the entire list was removed.
+
+\subsection*{SlDestroyNode}
+This is O(1) because it frees the memory that the node was in.
+
+\end{document}
