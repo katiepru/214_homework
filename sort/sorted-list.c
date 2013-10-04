@@ -32,6 +32,7 @@ void SLDestroy(SortedListPtr list)
     {
         ptr = SLDestroyNode(ptr);
     }
+    free(list);
 }
 
 /*
@@ -274,6 +275,7 @@ int SLRemove(SortedListPtr list, void *newObj)
         if(comp_result == 0)
         {
             previous->next = ptr->next;
+            IncNodeRef(ptr->next);
             ptr->deleted = 1;
             DecNodeRef(ptr);
             return 1;
