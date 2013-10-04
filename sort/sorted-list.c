@@ -57,6 +57,7 @@ int SLInsert(SortedListPtr list, void *newObj)
     newNode = malloc(sizeof(struct SortedListNode));
     newNode->data = newObj;
     newNode->deleted = 0;
+    newNode->references = 0;
 
     ptr = list->head;
 
