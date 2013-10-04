@@ -89,6 +89,12 @@ void IncNodeRef(SortedListNodePtr node)
 
 void DecNodeRef(SortedListNodePtr node)
 {
+    /* Safety check. */
+    if(node == NULL)
+    {
+        return;
+    }
+
     node->references--;
     if (node->references <= 0)
     {
