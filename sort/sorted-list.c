@@ -209,7 +209,7 @@ void *SLNextItem(SortedListIteratorPtr iter)
         //Start from head and return first item that is smaller
         curr_val = iter->index->data;
         tmp = iter->list->head;
-        while(tmp != NULL && (*iter->list->compare)(tmp->data, curr_val) > 0)
+        while(tmp != NULL && (*iter->list->compare)(tmp->data, curr_val) >= 0)
         {
             tmp = tmp->next;
         }
@@ -247,7 +247,7 @@ int SLRemove(SortedListPtr list, void *newObj)
     SortedListNodePtr ptr = list->head;
 
     /* see if we have an empty list or newObj can't be in the list */
-    if(ptr == NULL || list->compare(newObj, ptr->data) < 0)
+    if(ptr == NULL || list->compare(newObj, ptr->data) >  0)
     {
         return 0;
     }
