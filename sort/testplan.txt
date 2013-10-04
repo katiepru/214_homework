@@ -1,0 +1,17 @@
+Test Plan for Sorted List
+
+Test 1: Basic list creation and iteration
+    - Create a list containing the ints 0-18 that are multiples of 2 that are inserted in ascending order
+    - Insert a duplicate of the number 10, which should not end up being in the list twice
+    - Iterate though that list and make sure that the values are in the correct order
+    - This tests the iterator's basic functionality as well the the list's ability to handle sorting and duplicates
+
+Test 2: Deletion and insertion with mulitple iterators
+    - Create 2 iterators and have them both move up to head->next
+    - Delete the node they are pointing to
+    - Insert a node that contains a smaller value than the deleted one
+    - Advance one iterator. It should now point to the newly inserted node (check this)
+    - Delete the new node
+    - Insert a node with a greater value than the original head->next, but smaller than head
+    - Advance other iterator. It should now point to the node that is head->next->next (check this)
+    - This tests functionality with mulitple iterators, node deletion, and node insertion of different values
