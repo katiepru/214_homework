@@ -156,7 +156,7 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
         return NULL;
     }
 
-    iter->index = list->head;
+    iter->index = NULL;
     iter->list = list;
     return iter;
 }
@@ -177,6 +177,20 @@ void *SLNextItem(SortedListIteratorPtr iter)
 {
     void *curr_val = iter->index->data;
     SortedListNodePtr tmp;
+
+    if(iter->index == NULL)
+    {
+        iter->index = iter->list->head;
+
+        //Head of list is NULL
+        if(iter->index == NULL)
+        {
+            return NULL;
+        }
+
+        IncNodeRef(iter->list->head);
+        return iter->index->data;
+    }
 
     //Check if we got deleted from list
     if(iter->index->references == 0)
