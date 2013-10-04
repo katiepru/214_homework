@@ -75,6 +75,7 @@ int SLInsert(SortedListPtr list, void *newObj)
     /* Check if the new object is the same as the head */
     if(!list->compare(newObj, ptr->data))
     {
+        free(newNode);
         return 0;
     }
 
@@ -92,6 +93,7 @@ int SLInsert(SortedListPtr list, void *newObj)
         /* Check for duplicate */
         else if (!list->compare(newObj, next->data))
         {
+            free(newNode);
             return 0;
         }
 
