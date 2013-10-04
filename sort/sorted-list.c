@@ -51,16 +51,8 @@ int SLInsert(SortedListPtr list, void *newObj)
 
     ptr = list->head;
 
-    /* If the list is empty, make this node the head and return. */
-    if (ptr == NULL)
-    {
-        list->head = newNode;
-        IncNodeRef(newNode);
-        return 1;
-    }
-
     /* Check if the node should become the new head */
-    if (list->compare(newObj, ptr->data) <= 0)
+    if (ptr == NULL || list->compare(newObj, ptr->data) > 0)
     {
         newNode->next = ptr;
         list->head = newNode;
@@ -68,17 +60,29 @@ int SLInsert(SortedListPtr list, void *newObj)
         return 1;
     }
 
+    /* Check if the new object is the same as the head */
+    if(!list->compare(newObj, ptr->data))
+    {
+        return 0;
+    }
+
     next = ptr->next;
 
+    /* Attempt to insert between two elements */
     while(next != NULL) {
-        if(list->compare(newObj, ptr->data) >= 1
-        && list->compare(newObj, next->data) <= 0)
+        if(list->compare(newObj, next->data) > 0)
         {
             newNode->next = ptr->next;
             ptr->next = newNode;
             IncNodeRef(newNode);
             return 1;
         }
+        /* Check for duplicate */
+        else if (!list->compare(newObj, next->data))
+        {
+            return 0;
+        }
+
         ptr = next;
         next = next->next;
     }
