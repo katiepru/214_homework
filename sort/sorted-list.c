@@ -1,5 +1,10 @@
 #include "sorted-list.h"
 
+/*
+ * SLCreate takes a pointer to a comparison function and returns a pointer to a
+ * new SortedList struct which can maintain a list of data that the function
+ * compares.
+ */
 SortedListPtr SLCreate(CompareFuncT cf){
     SortedListPtr list = malloc(sizeof(struct SortedList));
 
@@ -12,8 +17,15 @@ SortedListPtr SLCreate(CompareFuncT cf){
     return list;
 }
 
+/*
+ * SLDestroy takes a pointer to a SortedList struct and frees all the nodes
+ * pointed to by that list, followed by the struct itself.
+ */
 void SLDestroy(SortedListPtr list)
 {
+    /* Safety check */
+    if(!list) return;
+
     SortedListNodePtr ptr = list->head;
     SortedListNodePtr next;
 
@@ -112,10 +124,7 @@ void IncNodeRef(SortedListNodePtr node)
 void DecNodeRef(SortedListNodePtr node)
 {
     /* Safety check. */
-    if(node == NULL)
-    {
-        return;
-    }
+    if(!node) return;
 
     node->references--;
     if (node->references <= 0)
@@ -125,15 +134,16 @@ void DecNodeRef(SortedListNodePtr node)
     }
 }
 
+/*
+ * SLDestroyNode takes a pointer to a SortedListNode struct. It frees the struct
+ * and returns a pointer to its next.
+ */
 SortedListNodePtr SLDestroyNode(SortedListNodePtr node)
 {
     SortedListNodePtr next;
 
     /* check if we were passed NULL */
-    if (!node)
-    {
-        return NULL;
-    }
+    if (!node) return NULL;
 
     next = node->next;
 
@@ -150,11 +160,8 @@ SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 {
     SortedListIteratorPtr iter = malloc(sizeof(struct SortedListIterator));
 
-    if(iter == NULL)
-    {
-        //Malloc failed
-        return NULL;
-    }
+    //Malloc failed
+    if(!iter) return NULL;
 
     iter->index = NULL;
     iter->list = list;
