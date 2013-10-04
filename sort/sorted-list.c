@@ -26,6 +26,14 @@ void SLDestroy(SortedListPtr list)
     }
 }
 
+/*
+ * SLInsert takes a pointer to a list object and pointer of an object of the
+ * same type and attempts to insert it into the list. It returns 1 for
+ * successful insert and 0 for failure. Failure can be caused by either pointer
+ * being NULL or an object of the same value already existing in the list. In
+ * the second case the object pointed to WILL NOT be freed, and should be
+ * handled appropriately by the caller.
+ */
 int SLInsert(SortedListPtr list, void *newObj)
 {
     SortedListNodePtr ptr;
@@ -82,11 +90,21 @@ int SLInsert(SortedListPtr list, void *newObj)
     return 1;
 }
 
+/*
+ * IncNodeRef takes a pointer to a SortedListNode struct and increments its
+ * reference count.
+ */
 void IncNodeRef(SortedListNodePtr node)
 {
     node->references++;
 }
 
+/*
+ * DecNodeRef takes a pointer to a SortedListNode struct and decrements its
+ * reference count. If this causes the reference count to drop to 0 or below, it
+ * recursively decrements the reference count on the node's next and then frees
+ * the node.
+ */
 void DecNodeRef(SortedListNodePtr node)
 {
     /* Safety check. */
