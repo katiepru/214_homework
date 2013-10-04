@@ -30,6 +30,7 @@ struct SortedListNode
     int references;
     void* data;
     struct SortedListNode* next;
+    char deleted;
 };
 typedef struct SortedListNode* SortedListNodePtr;
 

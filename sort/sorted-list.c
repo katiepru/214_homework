@@ -60,6 +60,7 @@ int SLInsert(SortedListPtr list, void *newObj)
 
     newNode = malloc(sizeof(struct SortedListNode));
     newNode->data = newObj;
+    newNode->deleted = 0;
 
     ptr = list->head;
 
@@ -160,6 +161,9 @@ SortedListNodePtr SLDestroyNode(SortedListNodePtr node)
  */
 SortedListIteratorPtr SLCreateIterator(SortedListPtr list)
 {
+    /* Safety check */
+    if(!list) return NULL;
+
     SortedListIteratorPtr iter = malloc(sizeof(struct SortedListIterator));
 
     //Malloc failed
@@ -180,12 +184,15 @@ void SLDestroyIterator(SortedListIteratorPtr iter)
 }
 
 /*
- * Advances iterator and return data at node
+ * Advance iterator and return data at node
  */
 void *SLNextItem(SortedListIteratorPtr iter)
 {
-    void *curr_val = iter->index->data;
+    /* Safety check */
+    if(!iter) return NULL;
+
     SortedListNodePtr tmp;
+    void* curr_val;
 
     if(iter->index == NULL)
     {
@@ -202,36 +209,84 @@ void *SLNextItem(SortedListIteratorPtr iter)
     }
 
     //Check if we got deleted from list
-    if(iter->index->references == 0)
+    if(iter->index->deleted)
     {
         //Start from head and return first item that is smaller
         curr_val = iter->index->data;
         tmp = iter->list->head;
-        while(tmp != NULL &&
-              (*iter->list->compare)(tmp->data, curr_val) > 0)
+        while(tmp != NULL && (*iter->list->compare)(tmp->data, curr_val) > 0)
         {
             tmp = tmp->next;
         }
-
-        DecNodeRef(iter->index);
-        iter->index = tmp;
-        IncNodeRef(iter->index);
     }
     else
     {
-        //Reached end of list
+        /* Still in the list, go to next element */
         tmp = iter->index->next;
-        if(tmp == NULL)
-        {
-            SLDestroyIterator(iter);
-            return NULL;
-        }
-
-        //Adjust references accordingly
-        iter->index = tmp->next;
-        DecNodeRef(tmp);
-        IncNodeRef(iter->index);
     }
 
+    //Reached end of list
+    if(tmp == NULL)
+    {
+        return NULL;
+    }
+
+    //Adjust references
+    DecNodeRef(iter->index);
+    iter->index = tmp;
+    IncNodeRef(iter->index);
+
     return iter->index->data;
+}
+
+/*
+ * SLRemove removes an item from a sorted list
+ */
+int SLRemove(SortedListPtr list, void *newObj)
+{
+    /* Safety check */
+    if(!list || !newObj) return 0;
+
+    int comp_result;
+    SortedListNodePtr previous;
+    SortedListNodePtr ptr = list->head;
+
+    /* see if we have an empty list or newObj can't be in the list */
+    if(ptr == NULL || list->compare(newObj, ptr->data) < 0)
+    {
+        return 0;
+    }
+
+    /* see if it's the head */
+    if(!list->compare(newObj, ptr->data))
+    {
+        list->head = ptr->next;
+        DecNodeRef(ptr);
+        ptr->deleted = 1;
+        return 0;
+    }
+
+    previous = ptr;
+    ptr = ptr->next;
+
+    /* search through the list for value */
+    while(ptr != NULL)
+    {
+        comp_result = list->compare(newObj, ptr->data);
+
+        /* found object, remove it */
+        if(comp_result == 0)
+        {
+            previous->next = ptr->next;
+            ptr->deleted = 1;
+            DecNodeRef(ptr);
+            return 1;
+        }
+
+        previous = ptr;
+        ptr = ptr->next;
+    }
+
+    /* reached the end, didn't find the object */
+    return 0;
 }
