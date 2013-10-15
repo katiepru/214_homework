@@ -17,6 +17,6 @@
  * it will call the given function with an open file object and the pointer to
  * the object.
  */
-void for_file(char*, void*, void*);
+void for_file(char*, void(*)(), void*);
 
 #endif

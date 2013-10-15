@@ -1,6 +1,6 @@
 #include "fileio.h"
 
-void for_file(char* dirname, void* func, void* arg)
+void for_file(char* dirname, void (*func)(), void* arg)
 {
     struct dirent *entry;
     char path[1024];
@@ -33,7 +33,7 @@ void for_file(char* dirname, void* func, void* arg)
         /* if its a regular file, call the function on it */
         else
         {
-            /* call function here */
+            func(entry, arg);
         }
     } while ((entry = readdir(dir)));
     closedir(dir);
