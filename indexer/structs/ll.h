@@ -25,6 +25,7 @@ LL *create_list();
 LLNode *create_llnode(char *, LL *);
 void destroy_list(LL *);
 void destroy_llnode(LLNode *);
+void insert_node(LL *, LLNode *);
 
 #define _LL_H 1
 #endif

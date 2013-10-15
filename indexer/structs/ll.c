@@ -1,6 +1,26 @@
 #include "ll.h"
 
 /*
+ * Adds a node to the end of the list
+ */
+void insert_node(LL *list, LLNode *node)
+{
+    if(list->head == NULL)
+    {
+        list->head = node;
+        list->curr = node;
+    }
+    else
+    {
+        list->curr->next = node;
+        list->curr = node;
+    }
+}
+
+
+//Functions to allocate and free structs
+
+/*
  * Allocates a list
  */
 LL *create_list()
