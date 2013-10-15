@@ -1,9 +1,58 @@
 #include "trie.h"
 
+//Functions to use Tries
+
+/*
+ * Returns TrieNode that is the end of the word
+ * Assumes Trie arg is not NULL and word is lower case
+ */
+TrieNode *find_word(char *word, Trie *t)
+{
+    int i;
+    TrieNode *ptr = t->head;
+
+    for(i = 0; i < strlen(word); ++i)
+    {
+        if(ptr == NULL)
+        {
+            return NULL;
+        }
+
+        ptr = ptr->children[char_to_ind(word[i])];
+    }
+
+    return ptr;
+}
+
+/*
+ *
+ */
+void insert_word(char *word, void *data, Trie *t)
+{
+    int i;
+    TrieNode *ptr = t->head;
+    TrieNode *tmp;
+
+    for(i = 0; i < strlen(word); ++i)
+    {
+        if((tmp = ptr->children[char_to_ind(word[i])]) == NULL)
+        {
+            //FIXME: num
+            tmp = create_trienode(word[i], ptr, 0, t);
+        }
+        ptr = tmp;
+    }
+
+    t->insert_data(ptr, data);
+}
+
+
+//Functions to allocate and free structs
+
 /*
  * Allocates a Trie
  */
-Trie *create_trie(void(*destroy_data)(void *), TrieNode *head)
+Trie *create_trie(void(*destroy_data)(TrieNode *, void *), void(*insert_data)(TrieNode *, void *), TrieNode *head)
 {
     Trie *t = malloc(sizeof(Trie));
 
@@ -15,6 +64,7 @@ Trie *create_trie(void(*destroy_data)(void *), TrieNode *head)
 
     t->head = head;
     t->destroy_data = destroy_data;
+    t->insert_data = insert_data;
 
     return t;
 }
@@ -72,7 +122,7 @@ void destroy_trienode(TrieNode *node)
         destroy_trienode(node->children[i]);
     }
 
-    node->T->destroy_data(node->data);
+    node->T->destroy_data(node, node->data);
 
     free(node->children);
 }

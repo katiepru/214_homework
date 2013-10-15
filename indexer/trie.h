@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 //Struct definitions
 typedef struct TrieNode TrieNode;
@@ -17,12 +18,16 @@ struct TrieNode {
 
 struct Trie {
     TrieNode *head;
-    void (*destroy_data)(void *);
+    void (*destroy_data)(TrieNode *, void *);
+    void (*insert_data)(TrieNode *, void *);
 };
 
 //Function declarations
-Trie *create_trie(void(*)(void *), TrieNode *);
+char char_to_ind(char);
+Trie *create_trie(void(*)(TrieNode *, void *), void(*)(TrieNode *, void *), TrieNode *);
 TrieNode *create_trienode(char, TrieNode *, int, Trie *);
+TrieNode *find_word(char *, Trie *);
+void insert_word(char *, void *, Trie *);
 void destroy_trie(Trie *);
 void destroy_trienode(TrieNode *);
 
