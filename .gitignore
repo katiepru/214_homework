@@ -4,3 +4,5 @@
 
 *.a
 *.o
+
+.ycm_extra_conf.pyc
