@@ -2,14 +2,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "ll.h"
+#include <string.h>
 
-//Struct definitions
-typedef struct TermNode {
-    char *term;
-    struct TermNode *next;
-    LLNode *files;
-} TermNode;
+//Function declarations
+int compareStrings(void *, void *);
 
 #define _INDEXER_H 1
 #endif

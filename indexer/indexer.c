@@ -15,3 +15,15 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+/*
+ * String compare function
+ * Works backwards to get list to work with ascending order
+ */
+int compareString(void *p1, void *p2)
+{
+    char *s1 = p2;
+    char *s2 = p1;
+
+    return strcmp(s1, s2);
+}
