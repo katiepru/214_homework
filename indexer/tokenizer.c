@@ -1,5 +1,40 @@
 #include "tokenizer.h"
 
+char *get_next_token(Tokenizer *t)
+{
+    char *token = calloc(100, sizeof(char));
+    int len = 100;
+    int i = 0;
+
+    char c = fgetc(t->fp);
+    while(c != EOF && !t->is_delim(c))
+    {
+        if(i >= len)
+        {
+            token = realloc(token, len + 100);
+            len += 100;
+        }
+
+        token[i] = c;
+        i++;
+
+        c = fgetc(t->fp);
+    }
+
+    if(i == len)
+    {
+        token = realloc(token, len + 1);
+        token[i] = 0;
+    }
+    else
+    {
+        token[i] = 0;
+        token = realloc(token, strlen(token));
+    }
+
+    return token;
+}
+
 /*
  * Allocates a tokenizer. Takes in a file name.
  */
