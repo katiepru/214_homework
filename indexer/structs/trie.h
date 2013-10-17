@@ -14,6 +14,7 @@ struct TrieNode {
     TrieNode **children;
     void *data;
     Trie *T;
+    int depth;
 };
 
 struct Trie {

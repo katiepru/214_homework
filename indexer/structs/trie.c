@@ -97,6 +97,15 @@ TrieNode *create_trienode(char c, TrieNode *parent, int num_children, Trie *T)
         exit(1);
     }
 
+    if(parent != NULL)
+    {
+        node->depth = parent->depth + 1;
+    }
+    else
+    {
+        node->depth = 0;
+    }
+
     node->c = c;
     node->parent = parent;
     node->children = calloc(num_children, sizeof(TrieNode *));
