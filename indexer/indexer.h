@@ -8,6 +8,7 @@
 
 //Function declarations
 int compareStrings(void *, void *);
+int isDelim(char);
 
 #define _INDEXER_H 1
 #endif

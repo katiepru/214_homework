@@ -56,3 +56,11 @@ int compareStrings(void *p1, void *p2)
 
     return strcmp(s1, s2);
 }
+
+/*
+ * Is delim function
+ */
+int isDelim(char c)
+{
+    return (c < 48 || (c > 57 && c < 65) || (c > 90 && c < 97) || c > 122);
+}

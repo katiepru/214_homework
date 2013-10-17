@@ -7,7 +7,7 @@ char *get_next_token(Tokenizer *t)
     int i = 0;
 
     char c = fgetc(t->fp);
-    while(c != EOF && !t->is_delim(c))
+    while(c != EOF && !t->isDelim(c))
     {
         if(i >= len)
         {
@@ -38,7 +38,7 @@ char *get_next_token(Tokenizer *t)
 /*
  * Allocates a tokenizer. Takes in a file name.
  */
-Tokenizer *create_tokenizer(char *filename, int(*is_delim)(char))
+Tokenizer *create_tokenizer(char *filename, int(*isDelim)(char))
 {
     FILE *fp;
     Tokenizer *t = malloc(sizeof(Tokenizer));
@@ -57,7 +57,7 @@ Tokenizer *create_tokenizer(char *filename, int(*is_delim)(char))
     }
 
     t->fp = fp;
-    t->is_delim = is_delim;
+    t->isDelim = isDelim;
 
     return t;
 }

@@ -8,7 +8,7 @@ typedef struct Tokenizer Tokenizer;
 
 struct Tokenizer {
     FILE *fp;
-    int (*is_delim)(char c);
+    int (*isDelim)(char c);
 };
 
 //Function declarations
