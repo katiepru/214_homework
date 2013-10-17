@@ -19,11 +19,37 @@ int main(int argc, char *argv[])
 /*
  * String compare function
  * Works backwards to get list to work with ascending order
+ * Args are TrieNodes
  */
 int compareString(void *p1, void *p2)
 {
-    char *s1 = p2;
-    char *s2 = p1;
+    TrieNode *ptr1 = p1;
+    TrieNode *ptr2 = p2;
+
+    char s1[ptr2->depth + 1];
+    char s2[ptr1->depth + 1];
+
+    s2[ptr1->depth + 1] = 0;
+    s1[ptr2->depth + 1] = 0;
+
+    int i;
+
+    //Get word from p1
+    i = ptr1->depth;
+    while(ptr1->parent != NULL)
+    {
+        s2[i] = ptr1->c;
+        ptr1 = ptr1->parent;
+        i--;
+    }
+
+    i = ptr2->depth;
+    while(ptr2->parent != NULL)
+    {
+        s1[i] = ptr2->c;
+        ptr2 = ptr2->parent;
+        i--;
+    }
 
     return strcmp(s1, s2);
 }
