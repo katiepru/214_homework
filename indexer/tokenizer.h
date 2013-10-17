@@ -12,6 +12,7 @@ struct Tokenizer {
 
 //Function declarations
 Tokenizer *create_tokenizer(char *, int(*)(char));
+void destroy_tokenizer(Tokenizer *);
 
 #define _TOKENIZER_H 1
 #endif
