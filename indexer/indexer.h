@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "structs/trie.h"
+#include "structs/sorted-list.h"
 
 //Function declarations
 int compareStrings(void *, void *);

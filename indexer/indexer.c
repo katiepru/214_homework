@@ -13,6 +13,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Please only provide the output file and directory to index\n");
         return 1;
     }
+
+    //Create data structures
+    SortedListPtr list = SLCreate(compareStrings);
     return 0;
 }
 
@@ -21,7 +24,7 @@ int main(int argc, char *argv[])
  * Works backwards to get list to work with ascending order
  * Args are TrieNodes
  */
-int compareString(void *p1, void *p2)
+int compareStrings(void *p1, void *p2)
 {
     TrieNode *ptr1 = p1;
     TrieNode *ptr2 = p2;
