@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 
     //Create data structures
     SortedListPtr list = SLCreate(compareStrings);
+    Trie *trie = create_trie(destroy_data, insert_data);
     return 0;
 }
 

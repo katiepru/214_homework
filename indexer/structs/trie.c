@@ -52,7 +52,7 @@ void insert_word(char *word, void *data, Trie *t)
 /*
  * Allocates a Trie
  */
-Trie *create_trie(void(*destroy_data)(TrieNode *, void *), void(*insert_data)(TrieNode *, void *), TrieNode *head)
+Trie *create_trie(void(*destroy_data)(TrieNode *, void *), void(*insert_data)(TrieNode *, void *))
 {
     Trie *t = malloc(sizeof(Trie));
 
@@ -62,7 +62,7 @@ Trie *create_trie(void(*destroy_data)(TrieNode *, void *), void(*insert_data)(Tr
         exit(1);
     }
 
-    t->head = head;
+    t->head = create_trienode('\0', NULL, 36, t);
     t->destroy_data = destroy_data;
     t->insert_data = insert_data;
 
