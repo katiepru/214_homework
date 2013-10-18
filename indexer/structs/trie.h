@@ -24,13 +24,15 @@ struct Trie {
 };
 
 //Function declarations
-char char_to_ind(char);
 Trie *create_trie(void(*)(void *), void(*)(TrieNode *, void *));
+int char_to_ind(char);
 TrieNode *create_trienode(char, TrieNode *, int, Trie *);
 TrieNode *find_word(char *, Trie *);
 void insert_word(char *, void *, Trie *);
 void destroy_trie(Trie *);
 void destroy_trienode(TrieNode *);
+void dfs(TrieNode *, void(*)(char *, void *));
+char* get_word(TrieNode*);
 
 #define _TRIE_H 1
 #endif

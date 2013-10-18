@@ -47,6 +47,26 @@ void insert_word(char *word, void *data, Trie *t)
 }
 
 
+/*
+ * converts a char to it's index in the children array.
+ */
+int char_to_ind(char c)
+{
+    if (c < 58)
+    {
+        return c - 48;
+    }
+    else if (c < 91)
+    {
+        return c - 55;
+    }
+    else
+    {
+        return c - 87;
+    }
+}
+
+
 //Functions to allocate and free structs
 
 /*
@@ -134,4 +154,55 @@ void destroy_trienode(TrieNode *node)
     node->T->destroy_data(node->data);
 
     free(node->children);
+}
+
+/*
+ * performs a dfs and runs a function for each word it finds.
+ */
+void dfs(TrieNode *root, void(*func)(char*, void*))
+{
+    char *word;
+    int i;
+
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->data != NULL)
+    {
+        word = get_word(root);
+        func(word, root->data);
+    }
+
+    for (i = 0; i < 36; ++i)
+    {
+        dfs(root->children[i], func);
+    }
+}
+
+/*
+ * returns a char* represented by a given node.
+ */
+char* get_word(TrieNode *node)
+{
+    char* word;
+    int i;
+
+    if (node == NULL)
+    {
+        return NULL;
+    }
+
+    word = malloc(sizeof(char) * node->depth);
+
+    /* terminating null byte */
+    word[node->depth] = '\0';
+    for (i = (node->depth)-1; i > 0; --i)
+    {
+        word[i] = node->c;
+        node = node->parent;
+    }
+
+    return word;
 }
