@@ -72,7 +72,7 @@ int char_to_ind(char c)
 /*
  * Allocates a Trie
  */
-Trie *create_trie(void(*destroy_data)(TrieNode *, void *), void(*insert_data)(TrieNode *, void *))
+Trie *create_trie(void(*destroy_data)(void *), void(*insert_data)(TrieNode *, void *))
 {
     Trie *t = malloc(sizeof(Trie));
 
@@ -159,7 +159,7 @@ void destroy_trienode(TrieNode *node)
 /*
  * performs a dfs and runs a function for each word it finds.
  */
-void dfs(TrieNode *root, void(*func)(char*, void*))
+void dfs(TrieNode *root, void(*func)(char*, void*, void*), void *arg)
 {
     char *word;
     int i;
@@ -172,12 +172,13 @@ void dfs(TrieNode *root, void(*func)(char*, void*))
     if (root->data != NULL)
     {
         word = get_word(root);
-        func(word, root->data);
+        func(word, root->data, arg);
+        free(word);
     }
 
     for (i = 0; i < 36; ++i)
     {
-        dfs(root->children[i], func);
+        dfs(root->children[i], func, arg);
     }
 }
 

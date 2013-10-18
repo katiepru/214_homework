@@ -19,7 +19,7 @@ struct TrieNode {
 
 struct Trie {
     TrieNode *head;
-    void (*destroy_data)(TrieNode *, void *);
+    void (*destroy_data)(void *);
     void (*insert_data)(TrieNode *, void *);
 };
 
@@ -31,7 +31,7 @@ TrieNode *find_word(char *, Trie *);
 void insert_word(char *, void *, Trie *);
 void destroy_trie(Trie *);
 void destroy_trienode(TrieNode *);
-void dfs(TrieNode *, void(*)(char *, void *));
+void dfs(TrieNode *, void(*)(char *, void *, void *), void*);
 char* get_word(TrieNode*);
 
 #define _TRIE_H 1
