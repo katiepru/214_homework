@@ -159,7 +159,7 @@ void destroy_trienode(TrieNode *node)
 /*
  * performs a dfs and runs a function for each word it finds.
  */
-void dfs(TrieNode *root, void(*func)(char*, void*, void*), void *arg)
+void dfs(TrieNode *root, void(*func)(char*, char*, void*, void*), void *arg, char *file)
 {
     char *word;
     int i;
@@ -172,13 +172,13 @@ void dfs(TrieNode *root, void(*func)(char*, void*, void*), void *arg)
     if (root->data != NULL)
     {
         word = get_word(root);
-        func(word, root->data, arg);
+        func(word, root->data, arg, file);
         free(word);
     }
 
     for (i = 0; i < 36; ++i)
     {
-        dfs(root->children[i], func, arg);
+        dfs(root->children[i], func, arg, file);
     }
 }
 

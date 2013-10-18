@@ -31,7 +31,7 @@ TrieNode *find_word(char *, Trie *);
 void insert_word(char *, void *, Trie *);
 void destroy_trie(Trie *);
 void destroy_trienode(TrieNode *);
-void dfs(TrieNode *, void(*)(char *, void *, void *), void*);
+void dfs(TrieNode *, void(*)(char *, char*, void *, void *), void*, char*);
 char* get_word(TrieNode*);
 
 #define _TRIE_H 1
