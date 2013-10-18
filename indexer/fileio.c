@@ -1,4 +1,6 @@
 #include "fileio.h"
+#include "tokenizer.h"
+#include "indexer.h"
 
 void for_file(char* dirname, void (*func)(), void* arg)
 {
@@ -37,4 +39,25 @@ void for_file(char* dirname, void (*func)(), void* arg)
         }
     } while ((entry = readdir(dir)));
     closedir(dir);
+}
+
+void record_file(char *filename)
+{
+    Tokenizer *tok;
+    char *token;
+
+    if (filename == NULL)
+    {
+        return;
+    }
+
+    tok = create_tokenizer(filename, isDelim);
+
+    token = get_next_token(tok);
+    while(strlen(token))
+    {
+        /* replace this with call to add entry to linked list */
+        printf("%s: %s\n", filename, token);
+        token = get_next_token(tok);
+    }
 }
