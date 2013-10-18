@@ -33,7 +33,7 @@ void for_file(char* dirname, void (*func)(), void* arg)
         /* if its a regular file, call the function on it */
         else
         {
-            func(entry, arg);
+            func(path, arg);
         }
     } while ((entry = readdir(dir)));
     closedir(dir);
