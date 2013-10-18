@@ -49,6 +49,15 @@ void insert_data_sorted_list(TrieNode *node, void *data)
 }
 
 /*
+ * Destroys a sorted list
+ */
+void destroy_data_sorted_list(void *data)
+{
+    SortedListPtr list = (SortedListPtr) data;
+    SLDestroy(list);
+}
+
+/*
  * Inserts a file into the list
  * Data is filename
  */

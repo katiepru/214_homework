@@ -15,6 +15,7 @@ int isDelim(char);
 void insert_into_master(char *, char *, void *, void *);
 void insert_data_sorted_lsit(TrieNode *, void *);
 void insert_data(TrieNode *, void *);
+void destroy_data_sorted_list(void *);
 void destroy_data(void *);
 
 #define _INDEXER_H 1
