@@ -41,7 +41,7 @@ void for_file(char* dirname, void (*func)(), void* arg)
     closedir(dir);
 }
 
-void record_file(char *filename)
+void record_file(char *filename, void(*record)(char *file, char* token))
 {
     Tokenizer *tok;
     char *token;
@@ -57,7 +57,11 @@ void record_file(char *filename)
     while(strlen(token))
     {
         /* replace this with call to add entry to linked list */
+        /* record(filename, token); */
         printf("%s: %s\n", filename, token);
+        free(token);
         token = get_next_token(tok);
     }
+
+    destroy_tokenizer(tok);
 }
