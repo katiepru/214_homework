@@ -9,6 +9,9 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
+#include "tokenizer.h"
+#include "indexer.h"
+#include "structs/sorted-list.h"
 
 /*
  * for_file takes a directory struct, a pointer to a function, and a pointer to

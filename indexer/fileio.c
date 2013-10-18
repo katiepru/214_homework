@@ -1,6 +1,4 @@
 #include "fileio.h"
-#include "tokenizer.h"
-#include "indexer.h"
 
 void for_file(char* dirname, void (*func)(), void* arg)
 {
@@ -41,7 +39,7 @@ void for_file(char* dirname, void (*func)(), void* arg)
     closedir(dir);
 }
 
-void record_file(char *filename, void(*record)(char *file, char* token))
+void record_file(char *filename, SortedListPtr list)
 {
     Tokenizer *tok;
     char *token;
