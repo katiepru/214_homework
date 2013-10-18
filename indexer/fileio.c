@@ -60,7 +60,8 @@ void record_file(char *filename, Trie *main_trie)
         token = get_next_token(tok);
     }
 
-    //FIXME: Call something here to do something with the trie
+    dfs(t->head, insert_into_master, main_trie, filename);
+    destroy_trie(t);
     destroy_tokenizer(tok);
 }
 

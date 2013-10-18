@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    //Create data structures
-    SortedListPtr list = SLCreate(compareStrings);
-    Trie *trie = create_trie(destroy_data, insert_data);
+    //Create the master trie
+    Trie *trie = create_trie(destroy_data_sorted_list, insert_data_sorted_list);
+    for_file(argv[2], record_file, trie);
     return 0;
 }
 
