@@ -41,6 +41,15 @@ void insert_data(TrieNode *node, void *data)
 }
 
 /*
+ * Destroys linked list from trienode
+ */
+void destroy_data(TrieNode *node, void *data)
+{
+    LL *list = (LL *) data;
+    destroy_list(list);
+}
+
+/*
  * String compare function
  * Works backwards to get list to work with ascending order
  * Args are TrieNodes

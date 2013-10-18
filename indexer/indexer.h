@@ -10,6 +10,8 @@
 //Function declarations
 int compareStrings(void *, void *);
 int isDelim(char);
+void insert_data(TrieNode *, void *);
+void destroy_data(TrieNode *, void *);
 
 #define _INDEXER_H 1
 #endif
