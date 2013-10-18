@@ -21,6 +21,19 @@ int main(int argc, char *argv[])
 }
 
 /*
+ * Inserts word into master trie
+ */
+void insert_into_master(char *word, char *filename, void *data, void *arg)
+{
+    Trie *master = (Trie *) arg;
+    int count = *((int *) data);
+    FileNode *f = create_filenode(filename);
+    f->count = count;
+
+    insert_word(word, (void *) f, master);
+}
+
+/*
  * Inserts a file into the list
  * Data is filename
  */
@@ -44,7 +57,7 @@ void insert_data(TrieNode *node, void *data)
 /*
  * Destroys linked list from trienode
  */
-void destroy_data(TrieNode *node, void *data)
+void destroy_data(void *data)
 {
     LL *list = (LL *) data;
     destroy_list(list);

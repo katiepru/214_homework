@@ -6,12 +6,14 @@
 #include "structs/trie.h"
 #include "structs/sorted-list.h"
 #include "structs/ll.h"
+#include "structs/file-node.h"
 
 //Function declarations
 int compareStrings(void *, void *);
 int isDelim(char);
+void insert_into_master(char *, char *, void *, void *);
 void insert_data(TrieNode *, void *);
-void destroy_data(TrieNode *, void *);
+void destroy_data(void *);
 
 #define _INDEXER_H 1
 #endif
