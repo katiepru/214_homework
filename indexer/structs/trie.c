@@ -172,7 +172,7 @@ void dfs(TrieNode *root, void(*func)(char*, char*, void*, void*), void *arg, cha
     if (root->data != NULL)
     {
         word = get_word(root);
-        func(word, root->data, arg, file);
+        func(word, file, root->data, arg);
         free(word);
     }
 

@@ -79,3 +79,40 @@ void destroy_int_data(void *data)
 {
     free(data);
 }
+
+void write_index(Trie* tree, char* location)
+{
+    FILE *output;
+
+    if (tree == NULL || location == NULL)
+    {
+        return;
+    }
+
+    output = fopen(location, "w");
+    if (output == NULL) return;
+
+    dfs(tree->head, write_item, output, NULL);
+}
+
+void write_item(char *word, char *unused, void* list, void* output)
+{
+    SortedListIteratorPtr iter;
+    FileNode *info;
+    int entries = 0;
+
+    iter = SLCreateIterator(list);
+    info = SLNextItem(iter);
+
+    fprintf(output, "<list> %s\n", word);
+    while(info != NULL) {
+        if (entries % 5 == 0) fprintf(output, "\n");
+        fprintf(output, "%s %d", info->file_name, info->count);
+        entries++;
+        destroy_filenode(info);  /* FIXME: move this functionality into the SL */
+        info = SLNextItem(iter);
+    }
+    fprintf(output, "</list>\n");
+
+    SLDestroyIterator(iter);
+}

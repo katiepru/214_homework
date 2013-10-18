@@ -12,6 +12,8 @@
 #include "tokenizer.h"
 #include "indexer.h"
 #include "structs/sorted-list.h"
+#include "structs/file-node.h"
+#include "structs/trie.h"
 
 /*
  * for_file takes a directory struct, a pointer to a function, and a pointer to
@@ -28,6 +30,17 @@ void for_file(char*, void(*)(), void*);
  */
 void record_file(char*,Trie *);
 
+
+/*
+ * write_index takes the final tree and the output location and writes the
+ * entire index output.
+ */
+void write_index(Trie*, char* );
+
+/*
+ * write_item is a utility function used by write_index to output indivitual list items.
+ */
+void write_item(char*, char*, void*, void*);
 
 //Other
 void insert_int_data(TrieNode *, void *);
