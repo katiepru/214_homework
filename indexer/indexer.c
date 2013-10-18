@@ -34,6 +34,21 @@ void insert_into_master(char *word, char *filename, void *data, void *arg)
 }
 
 /*
+ * Inserts file info node into sorted list
+ */
+void insert_data_sorted_list(TrieNode *node, void *data)
+{
+    SortedListPtr list = (SortedListPtr) node->data;
+
+    if(list == NULL)
+    {
+        list = SLCreate(compare_file_nodes);
+    }
+
+    SLInsert(list, data);
+}
+
+/*
  * Inserts a file into the list
  * Data is filename
  */
@@ -61,6 +76,17 @@ void destroy_data(void *data)
 {
     LL *list = (LL *) data;
     destroy_list(list);
+}
+
+/*
+ * Compare two file nodes
+ */
+int compare_file_nodes(void *p1, void *p2)
+{
+    FileNode *f1 = (FileNode *) p1;
+    FileNode *f2 = (FileNode *) p2;
+
+    return f1->count - f2->count;
 }
 
 /*
