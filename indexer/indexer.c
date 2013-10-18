@@ -20,6 +20,27 @@ int main(int argc, char *argv[])
 }
 
 /*
+ * Inserts a file into the list
+ * Data is filename
+ */
+void insert_data(TrieNode *node, void *data)
+{
+    LL *list = (LL *) node->data;
+    char *filename = (char *) data;
+    LLNode *n;
+
+    if(strcmp(list->curr->file_name, filename) != 0)
+    {
+        n = create_llnode(filename, list);
+        insert_node(list, n);
+    }
+    else
+    {
+        list->curr->count++;
+    }
+}
+
+/*
  * String compare function
  * Works backwards to get list to work with ascending order
  * Args are TrieNodes
