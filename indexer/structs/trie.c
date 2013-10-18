@@ -131,7 +131,7 @@ void destroy_trienode(TrieNode *node)
         destroy_trienode(node->children[i]);
     }
 
-    node->T->destroy_data(node, node->data);
+    node->T->destroy_data(node->data);
 
     free(node->children);
 }

@@ -25,7 +25,7 @@ struct Trie {
 
 //Function declarations
 char char_to_ind(char);
-Trie *create_trie(void(*)(TrieNode *, void *), void(*)(TrieNode *, void *));
+Trie *create_trie(void(*)(void *), void(*)(TrieNode *, void *));
 TrieNode *create_trienode(char, TrieNode *, int, Trie *);
 TrieNode *find_word(char *, Trie *);
 void insert_word(char *, void *, Trie *);

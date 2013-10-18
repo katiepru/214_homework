@@ -39,8 +39,9 @@ void for_file(char* dirname, void (*func)(), void* arg)
     closedir(dir);
 }
 
-void record_file(char *filename, SortedListPtr list)
+void record_file(char *filename, Trie *main_trie)
 {
+    Trie *t = create_trie(destroy_int_data, insert_int_data);
     Tokenizer *tok;
     char *token;
 
@@ -54,12 +55,26 @@ void record_file(char *filename, SortedListPtr list)
     token = get_next_token(tok);
     while(strlen(token))
     {
-        /* replace this with call to add entry to linked list */
-        /* record(filename, token); */
-        printf("%s: %s\n", filename, token);
+        insert_word(token, NULL, t);
         free(token);
         token = get_next_token(tok);
     }
 
+    //FIXME: Call something here to do something with the trie
     destroy_tokenizer(tok);
+}
+
+void insert_int_data(TrieNode *ptr, void *dummy)
+{
+    if(ptr->data == NULL)
+    {
+        ptr->data = malloc(sizeof(int));
+        *((int *) ptr->data) = 1;
+    }
+    *((int *)ptr->data) += 1;
+}
+
+void destroy_int_data(void *data)
+{
+    free(data);
 }
