@@ -19,4 +19,10 @@
  */
 void for_file(char*, void(*)(), void*);
 
+/*
+ * record_file takes the path to a file, tokenizes it, and then calls a given
+ * function once for each token with the file path and the token as char*-s.
+ */
+void record_file(char*, void(*)());
+
 #endif
