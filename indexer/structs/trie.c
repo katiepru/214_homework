@@ -31,16 +31,16 @@ void insert_word(char *word, void *data, Trie *t)
 {
     int i;
     TrieNode *ptr = t->head;
-    TrieNode *tmp;
+    int index;
 
     for(i = 0; i < strlen(word); ++i)
     {
-        if((tmp = ptr->children[char_to_ind(word[i])]) == NULL)
+        index = char_to_ind(word[i]);
+        if(ptr->children[index] == NULL)
         {
-            //FIXME: num
-            tmp = create_trienode(word[i], ptr, 36, t);
+            ptr->children[index] = create_trienode(word[i], ptr, 36, t);
         }
-        ptr = tmp;
+        ptr = ptr->children[index];
     }
 
     t->insert_data(ptr, data);
