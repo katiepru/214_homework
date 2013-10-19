@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
     Trie *trie = create_trie(destroy_data_sorted_list, insert_data_sorted_list);
     for_file(argv[2], record_file, trie);
     write_index(trie, argv[1]);
+
+    destroy_trie(trie);
     return 0;
 }
 

@@ -2,11 +2,20 @@
 
 char *get_next_token(Tokenizer *t)
 {
-    char *token = calloc(100, sizeof(char));
+    char *token;
     int len = 100;
     int i = 0;
 
     char c = fgetc(t->fp);
+
+    while(t->isDelim(c)) {
+        if (c == EOF) return NULL;
+        c = fgetc(t->fp);
+    }
+    if (c == EOF) return NULL;
+
+    token = calloc(100, sizeof(char));
+
     while(c != EOF && !t->isDelim(c))
     {
         if(i >= len)
