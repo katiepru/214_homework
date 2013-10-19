@@ -19,10 +19,10 @@ void for_file(char* dirname, void (*func)(), void* arg)
 
     do
     {
+        int len = snprintf(path, sizeof(path)-1, "%s/%s", dirname, entry->d_name);
         /* if it's a directory, recurse */
         if (entry->d_type == DT_DIR)
         {
-            int len = snprintf(path, sizeof(path)-1, "%s/%s", dirname, entry->d_name);
             path[len] = 0;
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             {
@@ -63,10 +63,12 @@ void write_index(Trie* tree, char* location)
         return;
     }
 
-    output = fopen(location, "w");
+    output = fopen(location, "ab+");
     if (output == NULL) return;
 
     dfs(tree->head, write_item, output, NULL);
+
+    fclose(output);
 }
 
 void write_item(char *word, char *unused, void* list, void* output)
