@@ -20,4 +20,5 @@ libstructs.a :
 
 clean :
 	@rm -f *.o *.a
+	@cd structs && rm -f *.o *.a
 	@rm -f index
