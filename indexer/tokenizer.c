@@ -18,7 +18,7 @@ char *get_next_token(Tokenizer *t)
 
     while(c != EOF && !t->isDelim(c))
     {
-        if(i >= len)
+        if(i >= len-1)
         {
             token = realloc(token, len + 100);
             len += 100;
@@ -30,7 +30,7 @@ char *get_next_token(Tokenizer *t)
         c = fgetc(t->fp);
     }
 
-    if(i == len)
+    if(i == len-1)
     {
         token = realloc(token, len + 1);
         token[i] = 0;
@@ -38,7 +38,7 @@ char *get_next_token(Tokenizer *t)
     else
     {
         token[i] = 0;
-        token = realloc(token, strlen(token));
+        token = realloc(token, strlen(token)+1);
     }
 
     return token;
