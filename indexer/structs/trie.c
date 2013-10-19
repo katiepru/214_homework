@@ -197,11 +197,11 @@ char* get_word(TrieNode *node)
         return NULL;
     }
 
-    word = malloc(sizeof(char) * node->depth);
+    word = malloc(sizeof(char) * ((node->depth)+1));
 
     /* terminating null byte */
     word[node->depth] = '\0';
-    for (i = (node->depth)-1; i > 0; --i)
+    for (i = (node->depth)-1; i >= 0; --i)
     {
         word[i] = node->c;
         node = node->parent;
