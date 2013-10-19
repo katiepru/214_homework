@@ -147,7 +147,7 @@ void destroy_trienode(TrieNode *node)
         return;
     }
 
-    for(i = 0; i < (sizeof(node->children)/sizeof(TrieNode *)); ++i)
+    for(i = 0; i < 36; ++i)
     {
         destroy_trienode(node->children[i]);
     }
