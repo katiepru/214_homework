@@ -46,7 +46,10 @@ void insert_int_data(TrieNode *ptr, void *dummy)
         ptr->data = malloc(sizeof(int));
         *((int *) ptr->data) = 1;
     }
-    *((int *)ptr->data) += 1;
+    else
+    {
+        *((int *)ptr->data) += 1;
+    }
 }
 
 void destroy_int_data(void *data)
