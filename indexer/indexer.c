@@ -59,36 +59,6 @@ void destroy_data_sorted_list(void *data)
 }
 
 /*
- * Inserts a file into the list
- * Data is filename
- */
-void insert_data(TrieNode *node, void *data)
-{
-    LL *list = (LL *) node->data;
-    char *filename = (char *) data;
-    LLNode *n;
-
-    if(strcmp(list->curr->file_name, filename) != 0)
-    {
-        n = create_llnode(filename, list);
-        insert_node(list, n);
-    }
-    else
-    {
-        list->curr->count++;
-    }
-}
-
-/*
- * Destroys linked list from trienode
- */
-void destroy_data(void *data)
-{
-    LL *list = (LL *) data;
-    destroy_list(list);
-}
-
-/*
  * Compare two file nodes
  */
 int compare_file_nodes(void *p1, void *p2)
@@ -99,48 +69,28 @@ int compare_file_nodes(void *p1, void *p2)
     return f1->count - f2->count;
 }
 
-/*
- * String compare function
- * Works backwards to get list to work with ascending order
- * Args are TrieNodes
- */
-int compareStrings(void *p1, void *p2)
+void record_file(char *filename, Trie *main_trie)
 {
-    TrieNode *ptr1 = p1;
-    TrieNode *ptr2 = p2;
+    Trie *t = create_trie(destroy_int_data, insert_int_data);
+    Tokenizer *tok;
+    char *token;
 
-    char s1[ptr2->depth + 1];
-    char s2[ptr1->depth + 1];
-
-    s2[ptr1->depth + 1] = 0;
-    s1[ptr2->depth + 1] = 0;
-
-    int i;
-
-    //Get word from p1
-    i = ptr1->depth;
-    while(ptr1->parent != NULL)
+    if (filename == NULL)
     {
-        s2[i] = ptr1->c;
-        ptr1 = ptr1->parent;
-        i--;
+        return;
     }
 
-    i = ptr2->depth;
-    while(ptr2->parent != NULL)
+    tok = create_tokenizer(filename, isDelim);
+
+    token = get_next_token(tok);
+    while(strlen(token))
     {
-        s1[i] = ptr2->c;
-        ptr2 = ptr2->parent;
-        i--;
+        insert_word(token, NULL, t);
+        free(token);
+        token = get_next_token(tok);
     }
 
-    return strcmp(s1, s2);
-}
-
-/*
- * Is delim function
- */
-int isDelim(char c)
-{
-    return (c < 48 || (c > 57 && c < 65) || (c > 90 && c < 97) || c > 122);
+    dfs(t->head, insert_into_master, main_trie, filename);
+    destroy_trie(t);
+    destroy_tokenizer(tok);
 }

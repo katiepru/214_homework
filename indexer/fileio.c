@@ -39,32 +39,6 @@ void for_file(char* dirname, void (*func)(), void* arg)
     closedir(dir);
 }
 
-void record_file(char *filename, Trie *main_trie)
-{
-    Trie *t = create_trie(destroy_int_data, insert_int_data);
-    Tokenizer *tok;
-    char *token;
-
-    if (filename == NULL)
-    {
-        return;
-    }
-
-    tok = create_tokenizer(filename, isDelim);
-
-    token = get_next_token(tok);
-    while(strlen(token))
-    {
-        insert_word(token, NULL, t);
-        free(token);
-        token = get_next_token(tok);
-    }
-
-    dfs(t->head, insert_into_master, main_trie, filename);
-    destroy_trie(t);
-    destroy_tokenizer(tok);
-}
-
 void insert_int_data(TrieNode *ptr, void *dummy)
 {
     if(ptr->data == NULL)

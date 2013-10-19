@@ -75,3 +75,11 @@ void destroy_tokenizer(Tokenizer *t)
     fclose(t->fp);
     free(t);
 }
+
+/*
+ * Is delim function
+ */
+int isDelim(char c)
+{
+    return (c < 48 || (c > 57 && c < 65) || (c > 90 && c < 97) || c > 122);
+}

@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "tokenizer.h"
-#include "indexer.h"
 #include "structs/sorted-list.h"
 #include "structs/file-node.h"
 #include "structs/trie.h"
@@ -23,12 +22,6 @@
  * the object.
  */
 void for_file(char*, void(*)(), void*);
-
-/*
- * record_file takes the path to a file, tokenizes it, and then calls a given
- * function once for each token with the file path and the token as char*-s.
- */
-void record_file(char*,Trie *);
 
 
 /*
