@@ -83,7 +83,7 @@ void record_file(char *filename, Trie *main_trie)
     tok = create_tokenizer(filename, isDelim);
 
     token = get_next_token(tok);
-    while(token != NULL)
+    while(token != NULL && strlen(token))
     {
         insert_word(token, NULL, t);
         free(token);

@@ -130,6 +130,7 @@ TrieNode *create_trienode(char c, TrieNode *parent, int num_children, Trie *T)
     node->parent = parent;
     node->children = calloc(num_children, sizeof(TrieNode *));
     node->T = T;
+    node->data = NULL;
 
     return node;
 }
