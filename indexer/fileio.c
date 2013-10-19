@@ -83,7 +83,6 @@ void write_item(char *word, char *unused, void* list, void* output)
     fprintf(output, "<list> %s\n", word);
     while(info != NULL) {
         if (entries > 0 && entries % 5 == 0) fprintf(output, "\n");
-        fprintf(stderr, "writing for %s: %s; %d\n", word, info->file_name, info->count);
         fprintf(output, "%s %d", info->file_name, info->count);
         entries++;
         destroy_filenode(info);  /* FIXME: move this functionality into the SL */
