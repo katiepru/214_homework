@@ -41,14 +41,12 @@ void insert_into_master(char *word, char *filename, void *data, void *arg)
  */
 void insert_data_sorted_list(TrieNode *node, void *data)
 {
-    SortedListPtr list = (SortedListPtr) node->data;
-
-    if(list == NULL)
+    if(node->data == NULL)
     {
-        list = SLCreate(compare_file_nodes);
+        node->data = SLCreate(compare_file_nodes);
     }
 
-    SLInsert(list, data);
+    SLInsert((SortedListPtr)node->data, data);
 }
 
 /*
