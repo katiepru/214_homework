@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     //Create the master trie
     Trie *trie = create_trie(destroy_data_sorted_list, insert_data_sorted_list);
     for_file(argv[2], record_file, trie);
-    dfs(trie->head, write_item, argv[1], NULL);
+    write_index(trie, argv[1]);
     return 0;
 }
 
