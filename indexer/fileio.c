@@ -4,6 +4,7 @@ void for_file(char* dirname, void (*func)(), void* arg)
 {
     struct dirent *entry;
     char path[1024];
+    char *tmp_path;
     DIR* dir;
 
     /* safety check, need non-null pointers */
@@ -28,12 +29,14 @@ void for_file(char* dirname, void (*func)(), void* arg)
             {
                 continue;
             }
-            for_file(path, func, arg);
+            strcpy((tmp_path = malloc(sizeof(char)*(strlen(path)+1))), path);
+            for_file(tmp_path, func, arg);
         }
         /* if its a regular file, call the function on it */
         else
         {
-            func(path, arg);
+            strcpy((tmp_path = malloc(sizeof(char)*(strlen(path)+1))), path);
+            func(tmp_path, arg);
         }
     } while ((entry = readdir(dir)));
     closedir(dir);
