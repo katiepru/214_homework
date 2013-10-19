@@ -38,7 +38,7 @@ void insert_word(char *word, void *data, Trie *t)
         if((tmp = ptr->children[char_to_ind(word[i])]) == NULL)
         {
             //FIXME: num
-            tmp = create_trienode(word[i], ptr, 0, t);
+            tmp = create_trienode(word[i], ptr, 36, t);
         }
         ptr = tmp;
     }
