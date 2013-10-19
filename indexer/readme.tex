@@ -19,6 +19,11 @@ destroyed.  The filenames and frequencies are stored in a sorted list that can b
 found at each complete word in the prefix tree.  This information is then
 written to the output file. If the file does not exist, we create it.
 
+Notes\\
+If the output file already exists, it appends to it. If it does not, it creates
+it.\\
+If the directory is empty for does not exist, output file is written was blank.
+
 \section*{Efficiency}
 In order to build or dfs on a prefix tree, the efficiency is O(nk), where n is
 the number of words and k is the average word length.  We create m+1 prefix
