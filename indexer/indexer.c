@@ -66,6 +66,11 @@ int compare_file_nodes(void *p1, void *p2)
     FileNode *f1 = (FileNode *) p1;
     FileNode *f2 = (FileNode *) p2;
 
+    if (f1->count == f2->count)
+    {
+        return -1;
+    }
+
     return f1->count - f2->count;
 }
 

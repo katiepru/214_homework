@@ -6,6 +6,7 @@
 FileNode *create_filenode(char *file_name)
 {
     FileNode *f = malloc(sizeof(FileNode));
+    char *new_filename;
 
     if(f == NULL)
     {
@@ -13,7 +14,8 @@ FileNode *create_filenode(char *file_name)
         exit(1);
     }
 
-    f->file_name = file_name;
+    strcpy((new_filename = malloc(sizeof(char) * (strlen(file_name) + 1))), file_name);
+    f->file_name = new_filename;
     f->count = 1;
 
     return f;
@@ -24,6 +26,7 @@ FileNode *create_filenode(char *file_name)
  */
 void destroy_filenode(FileNode *f)
 {
+
     free(f->file_name);
     free(f);
 }
