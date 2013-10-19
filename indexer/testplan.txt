@@ -1,0 +1,45 @@
+Test 1: Empty directory
+Command: ./index test.out tests/test1
+Expected Output: test.out should be empty
+Actual Output: test.out was empty
+
+Test 2: Multi-dir set with more than 5 files
+Command: ./index test.out tests/test2
+Expected Output: test.out should contain:
+<list> aaa
+tests/test2/dir/asdf 3 tests/test2/foo.txt 2 tests/test2/bar 1 tests/test2/dir/dir/asdf 1 tests/test2/lol 1
+tests/test2/lol2 1
+</list>
+<list> bbb
+tests/test2/foo.txt 1
+</list>
+<list> ccc
+tests/test2/dir/dir/asdf 1 tests/test2/foo.txt 1
+</list>
+<list> eee2
+tests/test2/lol2 1
+</list>
+<list> fff
+tests/test2/lol 1
+</list>
+<list> jjj
+tests/test2/bar 2 tests/test2/dir/asdf 1 tests/test2/dir/dir/asdf 1
+</list>
+<list> kkk
+tests/test2/bar 1
+</list>
+Actual Output: Same as above
+
+Test 3: Directory Does Not Exist
+Command: ./index test.out foosokdfj
+Expected Output: test.out should be empty, no errors thrown
+Actual Output: test.out was empty, no errors thrown
+
+Test 4: Large data set
+Same type of test as Test 2, but with a lot of files.
+It worked.
+
+Test 5: Output file already exists
+Command: ./index test.out tests/test2
+Expected Output: test.out will have new output appended to it
+Actual Output: Same
