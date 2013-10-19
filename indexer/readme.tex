@@ -1,0 +1,28 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[margin=.5in]{geometry}
+
+\begin{document}
+
+\noindent Joshua Matthews \& Kaitlin Poskaitis
+
+\noindent Systems Programming
+
+\noindent Indexer
+
+\section*{Design}
+This program utilizes prefix trees and sorted lists in its implementation.
+First, a file from the directory gets tokenized and all of its tokens get added
+to a temporary prefix tree along with their frequencies. Then, the information
+from this tree gets added into a master prefix tree, and the temporary tree gets
+destroyed.  The filenames and frequencies are stored in a sorted list that can be
+found at each complete word in the prefix tree.  This information is then
+written to the output file. If the file does not exist, we create it.
+
+\section*{Efficiency}
+In order to build or dfs on a prefix tree, the efficiency is O(nk), where n is
+the number of words and k is the average word length.  We create m+1 prefix
+trees, where m is the number of files, but each file only contains a subset of
+the total words. In total, the efficiency should be O(mnk).
+
+\end{document}
