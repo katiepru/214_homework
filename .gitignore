@@ -6,3 +6,5 @@
 *.o
 
 .ycm_extra_conf.pyc
+
+*.swp
