@@ -3,6 +3,12 @@
 int main(int argc, char **argv)
 {
     FILE *input;
+    char operator[50];
+    char term[1000];
+    char **terms = calloc(100, sizeof(char *));
+    int i = 0;
+    int result;
+    char discard;
 
     //Checl number of arguments
     if(argc != 2)
@@ -22,6 +28,33 @@ int main(int argc, char **argv)
     }
 
     Trie *file_contents = preprocess_file(input);
+
+    //Get queries
+    printf("Enter a query. Enter q to quit\n");
+    while((scanf("%s", operator)) != EOF)
+    {
+        if(strcmp(operator, "q") == 0)
+        {
+            break;
+        }
+
+        //Get terms
+        while((result = scanf("%s %[^\n]", term, &discard)) > 0)
+        {
+            terms[i] = malloc(sizeof(term));
+            strcpy(terms[i], term);
+            i++;
+            if(result == 2) break;
+        }
+
+        //Check if valid operator
+        if(!(strcmp(operator, "sa") == 0 || strcmp(operator, "so") == 0))
+        {
+            fprintf(stderr, "Invalid query. Use sa or so.\n");
+            continue;
+        }
+        printf("Enter a query. Enter q to quit\n");
+    }
 
     return 0;
 
