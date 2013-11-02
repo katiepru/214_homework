@@ -23,6 +23,8 @@ int main(int argc, char **argv)
 
     Trie *file_contents = preprocess_file(input);
 
+    return 0;
+
 }
 
 /*
@@ -33,6 +35,7 @@ Trie *preprocess_file(FILE *input)
     int fscanf_result = 1;
     char term[1000];
     char file[1000];
+    void *dummy[1000];
     Trie *trie = create_trie(destroy_data_in_sorted_list, insert_data_into_sorted_list);
     TrieNode *curr_node;
     FileNode *fnode;
@@ -40,7 +43,7 @@ Trie *preprocess_file(FILE *input)
     while(fscanf_result != EOF)
     {
         //First, get term
-        fscanf_result = fscanf(input, "%s %s", NULL, term);
+        fscanf_result = fscanf(input, "%s %s", (char *)dummy, term);
         if(fscanf_result < 2)
         {
             continue;
@@ -52,14 +55,12 @@ Trie *preprocess_file(FILE *input)
 
         //Term is in trie, now add files
         do {
-            fscanf_result = fscanf(input, "%s %d", file, NULL);
+            fscanf_result = fscanf(input, "%s %d", file, (int *)dummy);
             fnode = create_filenode(file);
             trie->insert_data(curr_node, (void *) fnode);
         } while(fscanf_result > 1);
-
     }
-
-
+    return trie;
 }
 
 /*
