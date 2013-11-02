@@ -53,7 +53,7 @@ Trie *preprocess_file(FILE *input)
         //Term is in trie, now add files
         do {
             fscanf_result = fscanf(input, "%s %d", file, NULL);
-            fnode = creat_filenode(file);
+            fnode = create_filenode(file);
             trie->insert_data(curr_node, (void *) fnode);
         } while(fscanf_result > 1);
 
@@ -65,7 +65,7 @@ Trie *preprocess_file(FILE *input)
 /*
  * Destroys a sorted list
  */
-void destroy_data_in_sorted_list(void *data);
+void destroy_data_in_sorted_list(void *data)
 {
     SortedListPtr list = (SortedListPtr) data;
     SLDestroy(list);

@@ -9,5 +9,10 @@
 //Function Declarations
 Trie *preprocess_file(FILE *);
 
+//Helper functions for structs
+void destroy_data_in_sorted_list(void *);
+void insert_data_into_sorted_list(TrieNode *, void *);
+int compare_file_nodes(void *, void *);
+
 #define _SEARCH_H 1
 #endif
