@@ -1,7 +1,13 @@
 CC = gcc
 CFLAGS = -ggdb -Wall
 
-all : indexer
+all : indexer search
+
+search: libstructs.a search.o
+	$(CC) $(CFLAGS) -o search search.o libstructs.a
+
+search.o: search.c search.h
+	$(CC) $(CFLAGS) -c search.c
 
 indexer: libstructs.a indexer.o
 	$(CC) $(CFLAGS) -o index indexer.o fileio.o tokenizer.o libstructs.a
@@ -21,4 +27,4 @@ libstructs.a :
 clean :
 	@rm -f *.o *.a
 	@cd structs && rm -f *.o *.a
-	@rm -f index
+	@rm -f index search
