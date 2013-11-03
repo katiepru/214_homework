@@ -96,6 +96,37 @@ Trie *preprocess_file(FILE *input)
     return trie;
 }
 
+
+/*
+ * Handles OR queries
+ */
+SortedListPtr or_query(char **terms, Trie *trie)
+{
+    SortedListPtr list = SLCreate(compare_file_nodes);
+    SortedListIteratorPtr iter;
+    TrieNode *found;
+    void *list_item;
+    int i = 0;
+
+    while(terms[i] != NULL)
+    {
+        found = find_word(terms[i], trie);
+        if(found != NULL && found->data != NULL)
+        {
+            //Create an iterator and add everything to our output list
+            iter = SLCreateIterator((SortedListPtr) found->data);
+            while((list_item = SLNextItem(iter)) != NULL)
+            {
+                SLInsert(list, list_item);
+            }
+            SLDestroyIterator(iter);
+        }
+    }
+
+    return list;
+}
+
+
 /*
  * Destroys a sorted list
  */
