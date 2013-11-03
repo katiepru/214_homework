@@ -149,6 +149,14 @@ void *SLNextItem(SortedListIteratorPtr iter);
 
 
 /*
+ * SLPeekItem returns the next item in the list without moving the iterator
+ * forward.
+ */
+
+void *SLPeekItem(SortedListIteratorPtr iter);
+
+
+/*
  * IncNodeRef increments the number of references on a node.
  */
 void IncNodeRef(SortedListNodePtr);

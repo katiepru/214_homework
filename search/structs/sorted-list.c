@@ -236,6 +236,35 @@ void *SLNextItem(SortedListIteratorPtr iter)
     return iter->index->data;
 }
 
+
+void *SLPeekItem(SortedListIteratorPtr iter)
+{
+    /* Safety check */
+    if(!iter) return NULL;
+
+    if(iter->index == NULL)
+    {
+        iter->index = iter->list->head;
+
+        //Head of list is NULL
+        if(iter->index == NULL)
+        {
+            return NULL;
+        }
+
+        IncNodeRef(iter->list->head);
+        return iter->index->data;
+    }
+
+    //Reached end of list
+    if (iter->index->next == NULL)
+    {
+        return NULL;
+    }
+
+    return iter->index->next->data;
+}
+
 /*
  * SLRemove removes an item from a sorted list
  */
