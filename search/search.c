@@ -82,6 +82,17 @@ int main(int argc, char **argv)
         printf("Enter a query. Enter q to quit\n");
     }
 
+    //Free terms
+    while(i >= 0)
+    {
+        free(terms[i]);
+    }
+    free(terms);
+
+    //Free trie
+    destroy_trie(file_contents);
+
+
     return 0;
 
 }
@@ -158,7 +169,18 @@ SortedListPtr or_query(char **terms, Trie *trie)
  */
 void destroy_data_in_sorted_list(void *data)
 {
+    void *list_item;
     SortedListPtr list = (SortedListPtr) data;
+    SortedListIteratorPtr iter = SLCreateIterator(list);
+
+    //Free all the file nodes
+    while((list_item = SLNextItem(iter)) != NULL)
+    {
+        destroy_filenode((FileNode *) list_item);
+    }
+    SLDestroyIterator(iter);
+
+    //Free list
     SLDestroy(list);
 }
 
