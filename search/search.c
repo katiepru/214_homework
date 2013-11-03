@@ -88,6 +88,7 @@ int main(int argc, char **argv)
     while(i >= 0)
     {
         free(terms[i]);
+        i--;
     }
     free(terms);
 
@@ -274,6 +275,9 @@ SortedListPtr and_query(char **terms, Trie *trie)
  */
 void destroy_data_in_sorted_list(void *data)
 {
+    //Check that we have something to destroy
+    if(data == NULL) return;
+
     void *list_item;
     SortedListPtr list = (SortedListPtr) data;
     SortedListIteratorPtr iter = SLCreateIterator(list);
