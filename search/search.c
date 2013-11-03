@@ -51,6 +51,9 @@ int main(int argc, char **argv)
             if(result == 2) break;
         }
 
+        //Realloc terms
+        terms = realloc(terms, i*sizeof(char *));
+
         //Check if or query
         if(strcmp(operator, "so") == 0)
         {
