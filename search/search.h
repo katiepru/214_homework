@@ -9,6 +9,7 @@
 //Function Declarations
 Trie *preprocess_file(FILE *);
 SortedListPtr or_query(char **, Trie *);
+SortedListPtr and_query(char **, Trie *);
 
 //Helper functions for structs
 void destroy_data_in_sorted_list(void *);

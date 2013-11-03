@@ -9,8 +9,12 @@ int main(int argc, char **argv)
     int i = 0;
     int result;
     char discard;
+    Trie *file_contents;
+    SortedListPtr result_list;
+    SortedListIteratorPtr iter;
+    void *list_item;
 
-    //Checl number of arguments
+    //Check number of arguments
     if(argc != 2)
     {
         fprintf(stderr, "ERROR: Wrong number of arguments.\n");
@@ -27,7 +31,7 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    Trie *file_contents = preprocess_file(input);
+    file_contents = preprocess_file(input);
 
     //Get queries
     printf("Enter a query. Enter q to quit\n");
@@ -47,12 +51,31 @@ int main(int argc, char **argv)
             if(result == 2) break;
         }
 
-        //Check if valid operator
-        if(!(strcmp(operator, "sa") == 0 || strcmp(operator, "so") == 0))
+        //Check if or query
+        if(strcmp(operator, "so") == 0)
+        {
+            result_list = or_query(terms, file_contents);
+        }
+        //Check if and query
+        else if(strcmp(operator, "sa") == 0)
+        {
+            result_list = and_query(terms, file_contents);
+        }
+        //Check for invalid query
+        else
         {
             fprintf(stderr, "Invalid query. Use sa or so.\n");
             continue;
         }
+
+        //Print results
+        iter = SLCreateIterator(result_list);
+        while((list_item = SLNextItem(iter)) != NULL)
+        {
+            printf("%s ", ((FileNode *) list_item)->file_name);
+        }
+
+        //Prompt for new query
         printf("Enter a query. Enter q to quit\n");
     }
 
