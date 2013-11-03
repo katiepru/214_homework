@@ -72,11 +72,13 @@ int main(int argc, char **argv)
         }
 
         //Print results
+        printf("Results:\n");
         iter = SLCreateIterator(result_list);
         while((list_item = SLNextItem(iter)) != NULL)
         {
             printf("%s ", ((FileNode *) list_item)->file_name);
         }
+        printf("\n");
 
         //Prompt for new query
         printf("Enter a query. Enter q to quit\n");
@@ -124,10 +126,11 @@ Trie *preprocess_file(FILE *input)
         curr_node = find_word(term, trie);
 
         //Term is in trie, now add files
+        fscanf_result = fscanf(input, "%s %d", file, (int *)dummy);
         do {
-            fscanf_result = fscanf(input, "%s %d", file, (int *)dummy);
             fnode = create_filenode(file);
             trie->insert_data(curr_node, (void *) fnode);
+            fscanf_result = fscanf(input, "%s %d", file, (int *)dummy);
         } while(fscanf_result > 1);
     }
     return trie;
@@ -158,6 +161,7 @@ SortedListPtr or_query(char **terms, Trie *trie)
             }
             SLDestroyIterator(iter);
         }
+        i++;
     }
 
     return list;
@@ -191,7 +195,7 @@ void insert_data_into_sorted_list(TrieNode *node, void *data)
 {
     if(node->data == NULL)
     {
-        SLCreate(compare_file_nodes);
+        node->data = SLCreate(compare_file_nodes);
     }
 
     SLInsert((SortedListPtr) node->data, data);
