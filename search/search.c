@@ -80,6 +80,11 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
+        //Empty terms and reset i
+        memset(terms, 0, i*sizeof(char *));
+        terms = realloc(terms, 1000);
+        i = 0;
+
         //Prompt for new query
         printf("Enter a query. Enter q to quit\n");
     }
