@@ -258,6 +258,7 @@ int SLRemove(SortedListPtr list, void *newObj)
     if(!list->compare(newObj, ptr->data))
     {
         list->head = ptr->next;
+        IncNodeRef(ptr->next);
         DecNodeRef(ptr);
         ptr->deleted = 1;
         return 1;
