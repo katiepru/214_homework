@@ -169,6 +169,100 @@ SortedListPtr or_query(char **terms, Trie *trie)
 
 
 /*
+ * Handles AND queries
+ */
+SortedListPtr and_query(char **terms, Trie *trie)
+{
+    SortedListPtr list;
+    SortedListIteratorPtr iter;
+    TrieNode *found;
+    char *current_term;
+    char found_term_bool;
+    int num_terms = sizeof(terms)/sizeof(char*);
+    int strcmp_result;
+    FileNode *curr_file_node;
+    FileNode *tmp_file_node;
+    SortedListIteratorPtr* iterators_arr = malloc(sizeof(SortedListIteratorPtr) * num_terms);
+    int i;
+
+    for(i = 0; i < num_terms; ++i)
+    {
+        found = find_word(terms[i], trie);
+        if(found != NULL && found->data != NULL)
+        {
+            //Create an iterator and add it to our array of iterators
+            iter = SLCreateIterator((SortedListPtr) found->data);
+            iterators_arr[i] = iter;
+        }
+        else
+        {
+            // One of the words didn't exist, kill everything
+            for (--i ;i >= 0; --i)
+            {
+                SLDestroyIterator(iterators_arr[i]);
+            }
+            free(iterators_arr);
+            return NULL;
+        }
+    }
+
+    list = SLCreate(compare_file_nodes);
+
+    while((curr_file_node = (FileNode*)SLNextItem(iterators_arr[0])) != NULL)
+    {
+        current_term = curr_file_node->file_name;
+        found_term_bool = 1;
+
+        for (i = 1; i < num_terms; ++i)
+        {
+            found_term_bool = 0;
+            // If this list has been exhausted we can't have the term
+            if (SLPeekItem(iterators_arr[i]) == NULL)
+            {
+                break;
+            }
+
+            while((tmp_file_node = SLPeekItem(iterators_arr[i])) != NULL)
+            {
+                strcmp_result = strcmp(current_term, tmp_file_node->file_name);
+                if (strcmp_result < 0)
+                {
+                    // We still need to move ahead to find the word if it
+                    // exists.
+                    SLNextItem(iterators_arr[i]);
+                    continue;
+                }
+                else if (strcmp_result > 0)
+                {
+                    // Word doesn't exist in current list, failure
+                    break;
+                }
+                else
+                {
+                    //found the word, insert it and move things ahead for next
+                    //time.
+                    found_term_bool = 1;
+                    SLNextItem(iterators_arr[i]);
+                    break;
+                }
+            }
+            if (!found_term_bool)
+            {
+                break;
+            }
+        }
+        if (found_term_bool)
+        {
+            SLInsert(list, curr_file_node);
+        }
+    }
+
+    //FIXME: what if it's empty?
+    return list;
+}
+
+
+/*
  * Destroys a sorted list
  */
 void destroy_data_in_sorted_list(void *data)
