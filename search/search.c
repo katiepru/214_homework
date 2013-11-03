@@ -257,6 +257,13 @@ SortedListPtr and_query(char **terms, Trie *trie)
         }
     }
 
+    // Free everything before we return
+    for (i = 0; i < num_terms; ++i)
+    {
+        SLDestroyIterator(iterators_arr[i]);
+    }
+    free(iterators_arr);
+
     //FIXME: what if it's empty?
     return list;
 }
