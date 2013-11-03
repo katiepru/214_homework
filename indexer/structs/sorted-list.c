@@ -260,7 +260,7 @@ int SLRemove(SortedListPtr list, void *newObj)
         list->head = ptr->next;
         DecNodeRef(ptr);
         ptr->deleted = 1;
-        return 0;
+        return 1;
     }
 
     previous = ptr;
