@@ -1,0 +1,90 @@
+# The tests here are run using the contents of testdir to build the index file.
+
+# Check for bad input on startup
+Input: ./search
+Output: ERROR: Wrong number of arguments.
+
+Input: ./search list extra_arg
+Output: ERROR: Wrong number of arguments.
+
+# Check for nonexistent or unreadable file
+# Assume list does not exist or we don't have read permission
+Input: ./search list
+Output: Unable to open file list.
+
+# All further tests assume the program has been successfully started and is now
+# querying for input
+
+# Test for bad bad queries
+Input: lolnope
+Output: Invalid query. Use sa or so.
+# This is if they hit enter after entering either nothing or any amount of
+# whitespace. In this case we just wait for them to enter a valid query. No
+# output is produced.
+Input:
+Output:
+
+# Test for exiting program
+Input: q
+Output: <Program gracefully exits>
+
+Input: q extra stuff after q
+Output: <Program gracefully exits>
+
+# Test if having q as a term will cause the program to exit
+Input: so q
+Output:
+
+Input: sa q
+Output:
+
+# Test for queries with the OR operator
+# No terms
+Input: so
+Output:
+
+# Terms that don't exist in any file
+Input: so josh
+Output:
+
+# Only one term
+Input: so carrie
+Output: testdir/b_and_c testdir/words_with_c
+
+# Multiple terms covering the same set of files.
+Input: so carrie car
+Output: testdir/b_and_c testdir/words_with_c
+
+# Multiple terms covering additional files
+Input: so car bullet
+Output: testdir/a_and_b testdir/b_and_c testdir/words_with_b testdir/words_with_c
+
+# Multiple terms covering all files
+Input: so aaron bullet car
+Output: testdir/a_and_b testdir/b_and_c testdir/words_with_a testdir/words_with_b testdir/words_with_c
+
+# Test for queries wit AND operator
+# No terms
+Input: sa
+Output:
+
+# Terms that don't exist in any file
+Input: sa katie
+Output:
+
+# Only one term
+Input: sa archer
+Output: testdir/a_and_b testdir/words_with_a
+
+# Multiple terms covering the same set of files
+Input: sa archer aliens
+Output: testdir/a_and_b testdir/words_with_a
+
+# Multiple terms covering additional files (which in the case of AND should
+# reduce the number of results)
+Input: sa archer barry
+Output: testdir/a_and_b
+
+# Multiple terms that don't ever all appear in the same file
+Input: sa archer barry carrie
+Output:
