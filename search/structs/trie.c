@@ -38,7 +38,7 @@ void insert_word(char *word, void *data, Trie *t)
         index = char_to_ind(word[i]);
         if(ptr->children[index] == NULL)
         {
-            ptr->children[index] = create_trienode(word[i], ptr, 36, t);
+            ptr->children[index] = create_trienode(tolower(word[i]), ptr, 36, t);
         }
         ptr = ptr->children[index];
     }
