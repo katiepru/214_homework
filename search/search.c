@@ -201,8 +201,15 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
     int strcmp_result;
     FileNode *curr_file_node;
     FileNode *tmp_file_node;
-    SortedListIteratorPtr* iterators_arr = malloc(sizeof(SortedListIteratorPtr) * num_terms);
+    SortedListIteratorPtr* iterators_arr;
     int i;
+
+    if (num_terms < 1)
+    {
+        return list;
+    }
+
+    iterators_arr = malloc(sizeof(SortedListIteratorPtr) * num_terms);
 
     for(i = 0; i < num_terms; ++i)
     {
