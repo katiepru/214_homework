@@ -189,7 +189,7 @@ SortedListPtr or_query(char **terms, Trie *trie)
  */
 SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
 {
-    SortedListPtr list;
+    SortedListPtr list = SLCreate(compare_file_nodes);
     SortedListIteratorPtr iter;
     TrieNode *found;
     char *current_term;
@@ -217,11 +217,9 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
                 SLDestroyIterator(iterators_arr[i]);
             }
             free(iterators_arr);
-            return NULL;
+            return list;
         }
     }
-
-    list = SLCreate(compare_file_nodes);
 
     while((curr_file_node = (FileNode*)SLNextItem(iterators_arr[0])) != NULL)
     {
