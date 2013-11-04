@@ -83,6 +83,10 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
+        //Destroy the list and iterator
+        SLDestroyIterator(iter);
+        SLDestroy(result_list);
+
         //Empty terms and reset i
         memset(terms, 0, i*sizeof(char *));
         terms = realloc(terms, 1000);
@@ -102,6 +106,9 @@ int main(int argc, char **argv)
 
     //Free trie
     destroy_trie(file_contents);
+
+    //Close file
+    fclose(input);
 
 
     return 0;
