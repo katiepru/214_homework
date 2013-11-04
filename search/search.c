@@ -11,6 +11,7 @@ int main(int argc, char **argv)
     SortedListPtr result_list;
     SortedListIteratorPtr iter;
     void *list_item;
+    char *tmp;
 
     //Check number of arguments
     if(argc != 2)
@@ -44,7 +45,10 @@ int main(int argc, char **argv)
         fgets(term, 1000, stdin);
 
         //Put terms in terms array
-        terms[i++] = strtok(term, " \t\n\v");
+        if((tmp = strtok(term, " \t\n\v")) != NULL)
+        {
+            terms[i++] = tmp;
+        }
         while((terms[i++] = strtok(NULL, " \t\n\v")) != NULL)
         {
             continue;
