@@ -198,6 +198,7 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
     TrieNode *found;
     char *current_term;
     char found_term_bool;
+    char finished_search_bool;
     int strcmp_result;
     FileNode *curr_file_node;
     FileNode *tmp_file_node;
@@ -240,6 +241,7 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
         for (i = 1; i < num_terms; ++i)
         {
             found_term_bool = 0;
+            finished_search_bool = 1;
             // If this list has been exhausted we can't have the term
             if (SLPeekItem(iterators_arr[i]) == NULL)
             {
@@ -259,6 +261,7 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
                 else if (strcmp_result > 0)
                 {
                     // Word doesn't exist in current list, failure
+                    finished_search_bool = 0;
                     break;
                 }
                 else
@@ -266,6 +269,7 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
                     //found the word, insert it and move things ahead for next
                     //time.
                     found_term_bool = 1;
+                    finished_search_bool = 0;
                     SLNextItem(iterators_arr[i]);
                     break;
                 }
@@ -274,6 +278,12 @@ SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
             {
                 break;
             }
+        }
+        if (finished_search_bool)
+        {
+            // If we reached the end of any list, then it can't contain any more
+            // matches and all future AND queries are moot.
+            break;
         }
         if (found_term_bool)
         {
