@@ -158,7 +158,7 @@ Trie *preprocess_file(FILE *input)
  */
 SortedListPtr or_query(char **terms, Trie *trie)
 {
-    SortedListPtr list = SLCreate(compare_file_nodes);
+    SortedListPtr list = SLCreate(compare_file_nodes_reverse);
     SortedListIteratorPtr iter;
     TrieNode *found;
     void *list_item;
@@ -189,7 +189,7 @@ SortedListPtr or_query(char **terms, Trie *trie)
  */
 SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
 {
-    SortedListPtr list = SLCreate(compare_file_nodes);
+    SortedListPtr list = SLCreate(compare_file_nodes_reverse);
     SortedListIteratorPtr iter;
     TrieNode *found;
     char *current_term;
@@ -327,4 +327,15 @@ int compare_file_nodes(void *p1, void *p2)
     FileNode *f2 = (FileNode *) p2;
 
     return strcmp(f1->file_name, f2->file_name);
+}
+
+/*
+ * Compares file nodes reverse alphabetically by file name
+ */
+int compare_file_nodes_reverse(void *p1, void *p2)
+{
+    FileNode *f1 = (FileNode *) p1;
+    FileNode *f2 = (FileNode *) p2;
+
+    return -(strcmp(f1->file_name, f2->file_name));
 }
