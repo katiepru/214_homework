@@ -7,8 +7,6 @@ int main(int argc, char **argv)
     char term[1000];
     char **terms = calloc(100, sizeof(char *));
     int i = 0;
-    int result;
-    char discard;
     Trie *file_contents;
     SortedListPtr result_list;
     SortedListIteratorPtr iter;
@@ -43,12 +41,13 @@ int main(int argc, char **argv)
         }
 
         //Get terms
-        while((result = scanf("%s %[^\n]", term, &discard)) > 0)
+        fgets(term, 1000, stdin);
+
+        //Put terms in terms array
+        terms[i++] = strtok(term, " \t\n\v");
+        while((terms[i++] = strtok(NULL, " \t\n\v")) != NULL)
         {
-            terms[i] = malloc(sizeof(term));
-            strcpy(terms[i], term);
-            i++;
-            if(result == 2) break;
+            continue;
         }
 
         //Realloc terms
@@ -68,6 +67,10 @@ int main(int argc, char **argv)
         else
         {
             fprintf(stderr, "Invalid query. Use sa or so.\n");
+            printf("Enter a query. Enter q to quit\n");
+            memset(terms, 0, i*sizeof(char *));
+            terms = realloc(terms, 1000);
+            i = 0;
             continue;
         }
 
