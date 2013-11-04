@@ -242,18 +242,16 @@ void *SLPeekItem(SortedListIteratorPtr iter)
     /* Safety check */
     if(!iter) return NULL;
 
+    /* do we have the head yet? */
     if(iter->index == NULL)
     {
-        iter->index = iter->list->head;
-
         //Head of list is NULL
-        if(iter->index == NULL)
+        if(iter->list->head == NULL)
         {
             return NULL;
         }
 
-        IncNodeRef(iter->list->head);
-        return iter->index->data;
+        return iter->list->head->data;
     }
 
     //Reached end of list

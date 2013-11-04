@@ -61,7 +61,7 @@ int main(int argc, char **argv)
         //Check if and query
         else if(strcmp(operator, "sa") == 0)
         {
-            result_list = and_query(terms, file_contents);
+            result_list = and_query(terms, i-1, file_contents);
         }
         //Check for invalid query
         else
@@ -187,14 +187,13 @@ SortedListPtr or_query(char **terms, Trie *trie)
 /*
  * Handles AND queries
  */
-SortedListPtr and_query(char **terms, Trie *trie)
+SortedListPtr and_query(char **terms, int num_terms, Trie *trie)
 {
     SortedListPtr list;
     SortedListIteratorPtr iter;
     TrieNode *found;
     char *current_term;
     char found_term_bool;
-    int num_terms = sizeof(terms)/sizeof(char*);
     int strcmp_result;
     FileNode *curr_file_node;
     FileNode *tmp_file_node;
