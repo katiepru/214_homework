@@ -4,8 +4,8 @@ int main(int argc, char **argv)
 {
     FILE *input;
     char operator[50];
-    char term[1000];
-    char **terms = calloc(100, sizeof(char *));
+    char term[10000];
+    char **terms = calloc(1000, sizeof(char *));
     int i = 0;
     Trie *file_contents;
     SortedListPtr result_list;
@@ -125,9 +125,9 @@ int main(int argc, char **argv)
 Trie *preprocess_file(FILE *input)
 {
     int fscanf_result = 1;
-    char term[1000];
-    char file[1000];
-    void *dummy[1000];
+    char term[10000];
+    char file[10000];
+    void *dummy[100];
     Trie *trie = create_trie(destroy_data_in_sorted_list, insert_data_into_sorted_list);
     TrieNode *curr_node;
     FileNode *fnode;
