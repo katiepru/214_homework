@@ -1,0 +1,67 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[margin=.5in]{geometry}
+
+\begin{document}
+
+\noindent Joshua Matthews \& Kaitlin Poskaitis
+
+\noindent Systems Programming
+
+\noindent Search
+
+\section*{Design and Time Efficiency}
+The indexer remains largely unchanged from the previous assignment.  It still
+outputs the inverted index file in the same format and has the same efficiency.
+
+Essentially our search program works by preprocessing the inverted index before
+any queries are entered. During this preprocessing step, it rebuilds a prefix
+tree of terms with sorted lists of the files that contain each term attached to
+each tree node that marks the end of a term.  These lists are sorted in reverse
+alphabetical order.
+
+Once a query is entered, this tree is searched in order to determine the output.
+If it is an or query, the programs searches for each term and adds all of the
+files to an output sorted list, which is sorted in alphabetical order to allow
+for constant inserts.  Any duplicates are ignored in this process by the sorted
+list implementation.  If we let $n$ be the number of terms queried for, $m$ be the
+number of files they appear in in total, and $k$ be the length of each word, the
+overall efficiency is $O(n(m+k))$.  This is because the tree much be traversed for
+each word $(nk)$, and then each file must be added to the output list $(nm)$.
+
+For the and query, each term is found in the sorted list and an iterator is
+attached to each sorted list. For each file in the first list, if it exists in
+every other list, then it is added to an output list sorted alphabetically. This
+efficiency is also $O(n(k+m))$ because first all of the terms must be found in
+the tree $(nk)$.  Then, doing the comparisons for each iterator would take
+$(nm)$.
+
+This leaves us with a total efficiency of $O(n(k+m))$ for both preprocessing and
+queries.
+
+\section*{Exceptional cases}
+\begin{itemize}
+    \item {\bf File does not exist or is not readable}: In this case the program
+    will report that it could not open the file and exit with a nonzero return
+    value.
+    \item {\bf Term in query does not exist in any files}: This will not affect
+    the program. If it is an or query, then the contents of the rest of the
+    terms will be printed. If it is an and query, then the result will be empty.
+    \item {\bf Invalid query operator}: Program will report that it was an
+    incorrect query operator and prompt for a new query.
+    \item {\bf Query q is followed by terms}: Program terminates and terms are
+    ignored.
+\end{itemize}
+
+\section*{Memory usage}
+The preprocessing is where most of the memory is used. The file is read in word
+by word, so that needs to be stored.  These word are then inserted into the
+prefix tree, which stores the character, a pointer to the parent, a pointer to
+the sorted list of file names, and an array of pointers to its 36 children, most
+of which will be null.  The complexity of the prefix tree would be approximately
+$O(n)$ where $n$ is the total number of characters in all of the words.  The
+sorted lists used would be approximately $O(m)$ where $m$ is the number of
+characters in the filenames.
+
+
+\end{document}
