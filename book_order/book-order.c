@@ -40,3 +40,25 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+Trie *build_category_trie(const char *filename)
+{
+    Trie *t = create_trie(destroy_queue, insert_into_queue);
+    FILE *category_file = fopen(filename, "r");
+    char category_name[100];
+
+    if(category_file == NULL)
+    {
+        fprintf(stderr, "Failed to open file %s\n", filename);
+        return NULL;
+    }
+
+    while(fscanf(category_file, "%s", category_name))
+    {
+        //FIXME: Insert with new queue
+        insert_word(category_name, NULL, t);
+        memset(category_name, 0, 100);
+    }
+
+    return t;
+}
