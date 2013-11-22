@@ -14,14 +14,25 @@ struct QueueNode {
 typedef struct SynchQueue SynchQueue;
 struct SynchQueue {
     QueueNode *head;
-    QueueNode *rear;
+    QueueNode *tail;
     int size;
     void (*destroy_data)(void *);
 };
 
 //Function declarations
+void enqueue(SynchQueue *, void *);
+void *dequeue(SynchQueue *);
+void *peek(SynchQueue *);
+int get_size(SynchQueue *);
+
+SynchQueue *queue_init(void (*destroy_data)(void *));
+void queue_destroy(SynchQueue *);
+
 QueueNode *create_queue_node(void *);
 void *destroy_queue_node(QueueNode *);
+
+//Helper functions
+QueueNode *dequeue_node(SynchQueue *);
 
 #define _SYNCH_QUEUE_H 1
 #endif
