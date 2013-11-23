@@ -16,7 +16,6 @@ struct OrderInfo {
     char *category;
     char *cid;
     int price;
-    short completed;
 };
 
 struct Customer {
@@ -36,6 +35,7 @@ Trie *build_category_trie(char **, int, int);
 Trie *build_customer_trie(const char *);
 void enqueue_orders(const char *, Trie *);
 void process_orders(Trie *, Trie *, char **, int, int);
+void print_results(char *, char *, void *, void *);
 
 //Helper functions
 void insert_into_queue(TrieNode *, void *);

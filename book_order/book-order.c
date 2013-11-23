@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     process_orders(order_trie, customer_trie, argv, 3, argc);
 
     //Return results for each customer
+    dfs(customer_trie->head, print_results, NULL, NULL);
 
     return 0;
 }
@@ -157,6 +158,45 @@ void enqueue_orders(const char *filename, Trie *category_trie)
         //Enqueue struct into correct queue
         n = find_word(book_category, category_trie);
         category_trie->insert_data(n, (void *)o);
+    }
+}
+
+void print_results(char *cid, char *dummy, void *data,
+                   void *dummy2)
+{
+    Customer *customer = (Customer *) data;
+    OrderInfo *curr;
+
+    printf("Successful orders:\n");
+    if(!customer->successful_orders)
+    {
+        printf("\tNone\n");
+    }
+    else
+    {
+        while((curr = dequeue(customer->successful_orders)) != NULL)
+        {
+            printf("\tTitle: %s\n\tPrice: %d\n", curr->book_name,
+                   curr->price);
+            destroy_order_info(curr);
+        }
+        queue_destroy(customer->successful_orders);
+    }
+
+    printf("\nUnsuccessful orders:\n");
+    if(!customer->failed_orders)
+    {
+        printf("\tNone\n");
+    }
+    else
+    {
+        while((curr = dequeue(customer->failed_orders)) != NULL)
+        {
+            printf("\tTitle: %s\n\tPrice: %d\n", curr->book_name,
+                   curr->price);
+            destroy_order_info(curr);
+        }
+        queue_destroy(customer->failed_orders);
     }
 }
 
