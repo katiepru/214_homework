@@ -17,12 +17,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if(argc > 3)
-    {
-        fprintf(stderr, "Too many arguments.\n");
-        return 1;
-    }
-
     //Build prefix tree with category names
     //Queues for consumer threads will be stored here
     order_trie = build_category_trie(argv, 3, argc);
@@ -308,6 +302,8 @@ Customer* create_customer(char* name, char* id, int credit, char* address, char*
     new_customer->address = strcpy(malloc(strlen(address) + 1), address);
     new_customer->state = strcpy(malloc(strlen(state) + 1), state);
     new_customer->zip = strcpy(malloc(strlen(zip) + 1), zip);
+
+    return new_customer;
 }
 
 void destroy_customer(Customer *cust)

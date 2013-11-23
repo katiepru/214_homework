@@ -4,14 +4,14 @@ AR = ar
 
 all: ../libstructs.a
 
-../libstructs.a: sorted-list.o trie.o
-	$(AR) rv ../libstructs.a sorted-list.o trie.o
+../libstructs.a: synch-queue.o trie.o
+	$(AR) rv ../libstructs.a synch-queue.o trie.o
 
 trie.o: trie.c
 	$(CC) $(CFLAGS) -c trie.c
 
-sorted-list.o: sorted-list.c
-	$(CC) $(CFLAGS) -c sorted-list.c
+synch-queue.o: synch-queue.c synch-queue.h
+	$(CC) $(CFLAGS) -c synch-queue.c
 
 clean:
 	@rm -rf *.o
