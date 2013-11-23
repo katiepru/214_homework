@@ -277,7 +277,7 @@ Trie *build_customer_trie(const char *filename) {
         return NULL;
     }
 
-    t = create_trie(destroy_queue, insert_into_queue);
+    t = create_trie(destroy_customer_wrapper, insert_into_queue);
 
     while (fgets(line, sizeof(line), customer_file) != NULL) {
         customer_name = strtok(&(line[1]), "\"|");
@@ -306,6 +306,8 @@ Customer* create_customer(char* name, char* id, int credit, char* address, char*
     new_customer->address = strcpy(malloc(strlen(address) + 1), address);
     new_customer->state = strcpy(malloc(strlen(state) + 1), state);
     new_customer->zip = strcpy(malloc(strlen(zip) + 1), zip);
+    new_customer->failed_orders = NULL;
+    new_customer->successful_orders = NULL;
 
     return new_customer;
 }
@@ -316,4 +318,4 @@ void destroy_customer(Customer *cust)
     free(cust->address);
     free(cust->state);
     free(cust->zip);
-}
+
