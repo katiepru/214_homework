@@ -198,8 +198,10 @@ void print_results(char *cid, char *dummy, void *data,
 
 void insert_into_queue(TrieNode *n, void *data)
 {
-    SynchQueue *q = (SynchQueue *) n->data;
-    enqueue(q, data);
+    if(n->data == NULL)
+    {
+        n->data = data;
+    }
 }
 
 void destroy_queue(void *data)
