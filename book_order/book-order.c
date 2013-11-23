@@ -129,6 +129,7 @@ void enqueue_orders(const char *filename, Trie *category_trie)
 
     OrderInfo *o;
     TrieNode *n;
+    SynchQueue *q;
 
     char buffer[1024];
     FILE *f = fopen(filename, "r");
@@ -151,7 +152,8 @@ void enqueue_orders(const char *filename, Trie *category_trie)
 
         //Enqueue struct into correct queue
         n = find_word(book_category, category_trie);
-        category_trie->insert_data(n, (void *)o);
+        q = (SynchQueue *) n->data;
+        enqueue(q, (void *) o);
     }
 }
 
