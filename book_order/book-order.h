@@ -3,6 +3,7 @@
 //Includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Local includes
 #include "structs/trie.h"
@@ -16,6 +17,16 @@ struct OrderInfo {
     int cid;
     int price;
 };
+
+struct customer {
+    char *name;
+    int id;
+    int credit;
+    char *address;
+    char *state;
+    char *zip;
+};
+typedef struct customer customer;
 
 //Function declarations
 Trie *build_category_trie(char **, int, int);
@@ -31,6 +42,9 @@ void process_order(OrderInfo *, Trie *);
 //Struct management fuctions
 OrderInfo *create_order(char *, char *, int, int);
 void destroy_order_info(void *);
+
+
+customer* create_customer(char*, int, int, char*, char*, char*);
 
 
 #define _BOOK_ORDER_H 1

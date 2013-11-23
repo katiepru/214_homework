@@ -181,3 +181,56 @@ void destroy_order_info(void *o)
 
     free(order);
 }
+
+Trie *build_customer_trie(const char *filename) {
+    Trie *t;
+    FILE *customer_file;
+    char line[1024];
+    char *customer_name;
+    int customer_id;
+    int customer_credit;
+    char *customer_address;
+    char *customer_state;
+    char *customer_zip;
+
+
+    customer_file = fopen(filename, "r");
+    if (customer_file == NULL) {
+        fprintf(stderr, "Failed to open file %s\n", filename);
+        return NULL;
+    }
+
+    t = create_trie(destroy_queue, insert_into_queue);
+
+    while (fgets(line, sizeof(line), customer_file) != NULL) {
+        customer_name = strtok(&(line[1]), "\"|");
+        customer_id = atoi(strtok(NULL, "|"));
+        customer_credit = (int) (atol(strtok(NULL, "|\"")) * 100);
+        customer_address = strtok(NULL, "\"|\"");
+        customer_state = strtok(NULL, "\"|\"");
+        customer_zip = strtok(NULL, "\"");
+
+        //FIXME: then insert into whatever we're storing it in.
+    }
+}
+
+
+customer* create_customer(char* name, int id, int credit, char* address, char* state, char* zip)
+{
+    customer *new_customer = malloc(sizeof(customer));
+
+    new_customer->name  = strcpy(malloc(strlen(name) + 1), name);
+    new_customer->id = id;
+    new_customer->credit = credit;
+    new_customer->address = strcpy(malloc(strlen(address) + 1), address);
+    new_customer->state = strcpy(malloc(strlen(state) + 1), state);
+    new_customer->zip = strcpy(malloc(strlen(zip) + 1), zip);
+}
+
+void destroy_customer(customer *cust)
+{
+    free(cust->name);
+    free(cust->address);
+    free(cust->state);
+    free(cust->zip);
+}
