@@ -225,7 +225,7 @@ Trie *build_customer_trie(const char *filename) {
     FILE *customer_file;
     char line[1024];
     char *customer_name;
-    int customer_id;
+    char *customer_id;
     int customer_credit;
     char *customer_address;
     char *customer_state;
@@ -242,7 +242,7 @@ Trie *build_customer_trie(const char *filename) {
 
     while (fgets(line, sizeof(line), customer_file) != NULL) {
         customer_name = strtok(&(line[1]), "\"|");
-        customer_id = atoi(strtok(NULL, "|"));
+        customer_id = strtok(NULL, "|");
         customer_credit = (int) (atol(strtok(NULL, "|\"")) * 100);
         customer_address = strtok(NULL, "\"|\"");
         customer_state = strtok(NULL, "\"|\"");
@@ -253,12 +253,12 @@ Trie *build_customer_trie(const char *filename) {
 }
 
 
-Customer* create_customer(char* name, int id, int credit, char* address, char* state, char* zip)
+Customer* create_customer(char* name, char* id, int credit, char* address, char* state, char* zip)
 {
     Customer *new_customer = malloc(sizeof(Customer));
 
     new_customer->name  = strcpy(malloc(strlen(name) + 1), name);
-    new_customer->id = id;
+    new_customer->id  = strcpy(malloc(strlen(id) + 1), id);
     new_customer->credit = credit;
     new_customer->address = strcpy(malloc(strlen(address) + 1), address);
     new_customer->state = strcpy(malloc(strlen(state) + 1), state);

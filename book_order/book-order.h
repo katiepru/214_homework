@@ -21,7 +21,7 @@ struct OrderInfo {
 
 struct Customer {
     char *name;
-    int id;
+    char *id;
     int credit;
     char *address;
     char *state;
@@ -48,7 +48,7 @@ OrderInfo *create_order(char *, char *, int, char *);
 void destroy_order_info(void *);
 
 
-Customer* create_customer(char*, int, int, char*, char*, char*);
+Customer* create_customer(char*, char*, int, char*, char*, char*);
 void destroy_customer(Customer *);
 
 
