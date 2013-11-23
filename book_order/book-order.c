@@ -35,10 +35,49 @@ int main(int argc, char *argv[])
     enqueue_orders(argv[2], order_trie);
 
     //Now, spin up helper threads to process orders
+    //FIXME: Single threaded solution
+    process_orders(order_trie, customer_trie, argv, 3, argc);
 
     //Return results for each customer
 
     return 0;
+}
+
+void process_orders(Trie *order_trie, Trie *customer_trie,
+                    char **args, int start, int argc)
+{
+    SynchQueue *curr_q;
+    TrieNode *curr;
+    OrderInfo *order;
+    int i;
+
+    //For each category
+    for(i = start; i < argc; i++)
+    {
+        //Find entry in order trie
+        curr = find_word(args[i], order_trie);
+
+        if(curr == NULL || curr->data == NULL)
+        {
+            fprintf(stderr, "Could not find orders for %s\n",
+                    args[i]);
+        }
+
+        //Get it's queue
+        curr_q = (SynchQueue *) curr->data;
+
+        //Go through and process each order
+        while((order = dequeue(curr_q)) != NULL)
+        {
+            process_order(order, customer_trie);
+        }
+
+        queue_destroy(curr_q);
+    }
+}
+
+void process_order(OrderInfo *o, Trie *customer_trie)
+{
 }
 
 Trie *build_category_trie(char **args, int start, int argc)

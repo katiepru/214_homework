@@ -21,10 +21,12 @@ struct OrderInfo {
 Trie *build_category_trie(char **, int, int);
 Trie *build_customer_trie(const char *);
 void enqueue_orders(const char *, Trie *);
+void process_orders(Trie *, Trie *, char **, int, int);
 
 //Helper functions
 void insert_into_queue(TrieNode *, void *);
 void destroy_queue(void *);
+void process_order(OrderInfo *, Trie *);
 
 //Struct management fuctions
 OrderInfo *create_order(char *, char *, int, int);
