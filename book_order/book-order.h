@@ -14,19 +14,22 @@ typedef struct OrderInfo OrderInfo;
 struct OrderInfo {
     char *book_name;
     char *category;
-    int cid;
+    char *cid;
     int price;
+    short completed;
 };
 
-struct customer {
+struct Customer {
     char *name;
     int id;
     int credit;
     char *address;
     char *state;
     char *zip;
+    SynchQueue *successful_orders;
+    SynchQueue *failed_orders;
 };
-typedef struct customer customer;
+typedef struct Customer Customer;
 
 //Function declarations
 Trie *build_category_trie(char **, int, int);
@@ -37,14 +40,16 @@ void process_orders(Trie *, Trie *, char **, int, int);
 //Helper functions
 void insert_into_queue(TrieNode *, void *);
 void destroy_queue(void *);
+void destroy_customer_wrapper(void *);
 void process_order(OrderInfo *, Trie *);
 
 //Struct management fuctions
-OrderInfo *create_order(char *, char *, int, int);
+OrderInfo *create_order(char *, char *, int, char *);
 void destroy_order_info(void *);
 
 
-customer* create_customer(char*, int, int, char*, char*, char*);
+Customer* create_customer(char*, int, int, char*, char*, char*);
+void destroy_customer(Customer *);
 
 
 #define _BOOK_ORDER_H 1

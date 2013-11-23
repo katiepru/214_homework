@@ -78,6 +78,36 @@ void process_orders(Trie *order_trie, Trie *customer_trie,
 
 void process_order(OrderInfo *o, Trie *customer_trie)
 {
+    Customer *customer;
+    TrieNode *found;
+
+    if(o == NULL) return;
+
+    found = find_word(o->cid, customer_trie);
+
+    if(!found || found->data == NULL)
+    {
+        fprintf(stderr, "Could not find customer %s.\n", o->cid);
+        return;
+    }
+
+    customer = (Customer *) found->data;
+
+    if(!customer->successful_orders) {
+        customer->successful_orders = queue_init(destroy_customer_wrapper);
+        customer->failed_orders = queue_init(destroy_customer_wrapper);
+    }
+
+    //Cannot afford this book
+    if(customer->credit < o->price)
+    {
+        enqueue(customer->failed_orders, (void *) o);
+    }
+    else
+    {
+        enqueue(customer->successful_orders, (void *) o);
+        customer->credit -= o->price;
+    }
 }
 
 Trie *build_category_trie(char **args, int start, int argc)
@@ -100,7 +130,7 @@ void enqueue_orders(const char *filename, Trie *category_trie)
     char *book_name;
     char *book_category;
     int book_price;
-    int customer_id;
+    char *customer_id;
 
     OrderInfo *o;
     TrieNode *n;
@@ -117,7 +147,7 @@ void enqueue_orders(const char *filename, Trie *category_trie)
     {
         book_name = strtok(buffer, "\"|");
         book_price = (int) (100*atol(strtok(NULL, "|")));
-        customer_id = atoi(strtok(NULL, "|"));
+        customer_id = strtok(NULL, "|");
         book_category = strtok(NULL, "\n");
 
         //Create order stuct
@@ -144,10 +174,16 @@ void destroy_queue(void *data)
     queue_destroy(q);
 }
 
+void destroy_customer_wrapper(void *data)
+{
+    Customer *c = (Customer *) data;
+    destroy_customer(c);
+}
+
 //Functions to handle order info structs
 
 OrderInfo *create_order(char *name, char *category,
-                       int price, int customer_id)
+                       int price, char *customer_id)
 {
     OrderInfo *o = malloc(sizeof(OrderInfo));
 
@@ -163,8 +199,10 @@ OrderInfo *create_order(char *name, char *category,
     o->category = malloc(strlen(category) + 1);
     strcpy(o->category, category);
 
+    o->cid = malloc(strlen(customer_id) + 1);
+    strcpy(o->cid, customer_id);
+
     o->price = price;
-    o->cid = customer_id;
 
     return o;
 
@@ -215,9 +253,9 @@ Trie *build_customer_trie(const char *filename) {
 }
 
 
-customer* create_customer(char* name, int id, int credit, char* address, char* state, char* zip)
+Customer* create_customer(char* name, int id, int credit, char* address, char* state, char* zip)
 {
-    customer *new_customer = malloc(sizeof(customer));
+    Customer *new_customer = malloc(sizeof(Customer));
 
     new_customer->name  = strcpy(malloc(strlen(name) + 1), name);
     new_customer->id = id;
@@ -227,7 +265,7 @@ customer* create_customer(char* name, int id, int credit, char* address, char* s
     new_customer->zip = strcpy(malloc(strlen(zip) + 1), zip);
 }
 
-void destroy_customer(customer *cust)
+void destroy_customer(Customer *cust)
 {
     free(cust->name);
     free(cust->address);
