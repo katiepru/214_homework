@@ -230,6 +230,7 @@ Trie *build_customer_trie(const char *filename) {
     char *customer_address;
     char *customer_state;
     char *customer_zip;
+    Customer *new_customer;
 
 
     customer_file = fopen(filename, "r");
@@ -248,8 +249,12 @@ Trie *build_customer_trie(const char *filename) {
         customer_state = strtok(NULL, "\"|\"");
         customer_zip = strtok(NULL, "\"");
 
-        //FIXME: then insert into whatever we're storing it in.
+        new_customer = create_customer(customer_name, customer_id, customer_credit, customer_address, customer_state, customer_zip);
+
+        insert_word(customer_id, new_customer, t);
     }
+
+    return t;
 }
 
 
