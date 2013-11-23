@@ -25,13 +25,18 @@ void enqueue(SynchQueue *q, void *data)
 void *dequeue(SynchQueue *q)
 {
     QueueNode *n = dequeue_node(q);
+    void *data;
 
     if(n == NULL)
     {
         return NULL;
     }
 
-    return n->data;
+    data = n->data;
+
+    destroy_queue_node(n);
+
+    return data;
 }
 
 QueueNode *dequeue_node(SynchQueue *q)
