@@ -1,5 +1,67 @@
 #include "synch-queue.h"
 
+//Queue use functions
+void enqueue(SynchQueue *q, void *data)
+{
+    QueueNode *n = create_queue_node(data);
+
+    if(n == NULL) return;
+
+    //Handle empty queue
+    if(q->tail == NULL)
+    {
+        q->head = n;
+        q->tail = n;
+        q->size = 1;
+    }
+    else
+    {
+        q->tail->next = n;
+        q->tail = n;
+        q->size++;
+    }
+}
+
+void *dequeue(SynchQueue *q)
+{
+    QueueNode *n = dequeue_node(q);
+
+    if(n == NULL)
+    {
+        return NULL;
+    }
+
+    return n->data;
+}
+
+QueueNode *dequeue_node(SynchQueue *q)
+{
+    QueueNode *ret;
+
+    //Empty
+    if(q->size == 0)
+    {
+        return NULL;
+    }
+
+    ret = q->head;
+
+    //One entry
+    if(q->size == 1)
+    {
+        q->head = NULL;
+        q->tail = NULL;
+    }
+    //Multiple entries
+    else
+    {
+        q->head = ret->next;
+    }
+    q->size--;
+
+    return ret;
+}
+
 //SynchQueue memory management
 
 SynchQueue *queue_init(void (*destroy_data)(void *data))

@@ -22,8 +22,6 @@ struct SynchQueue {
 //Function declarations
 void enqueue(SynchQueue *, void *);
 void *dequeue(SynchQueue *);
-void *peek(SynchQueue *);
-int get_size(SynchQueue *);
 
 SynchQueue *queue_init(void (*destroy_data)(void *));
 void queue_destroy(SynchQueue *);
