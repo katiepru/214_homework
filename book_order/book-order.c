@@ -45,9 +45,9 @@ int main(int argc, char *argv[])
 void process_orders(Trie *order_trie, Trie *customer_trie,
                     char **args, int start, int argc)
 {
-    SynchQueue *curr_q;
     TrieNode *curr;
-    OrderInfo *order;
+    pthread_t threads[argc-start];
+    CategoryArgs *cargs[argc-start];
     int i;
 
     //For each category
@@ -60,17 +60,45 @@ void process_orders(Trie *order_trie, Trie *customer_trie,
         {
             fprintf(stderr, "Could not find orders for %s\n",
                     args[i]);
+            continue;
         }
 
-        //Get it's queue
-        curr_q = (SynchQueue *) curr->data;
-
-        //Go through and process each order
-        while((order = dequeue(curr_q)) != NULL)
+        cargs[i-start] = malloc(sizeof(CategoryArgs));
+        if(cargs == NULL)
         {
-            process_order(order, customer_trie);
+            fprintf(stderr, "Malloc failed.\n");
+            return;
         }
+
+        cargs[i-start]->category_node = curr;
+        cargs[i-start]->customer_trie = customer_trie;
+
+        pthread_create(&(threads[i-start]), NULL,
+                       process_category, (void *) cargs[i-start]);
     }
+
+    for(i = 0; i < (argc-start); i++)
+    {
+        pthread_join(threads[i], NULL);
+        free(cargs[i]);
+    }
+}
+
+void *process_category(void *args)
+{
+    OrderInfo *order;
+    SynchQueue *category_q;
+    CategoryArgs *c = (CategoryArgs *) args;
+
+    //Get it's queue
+    category_q = (SynchQueue *) c->category_node->data;
+
+    //Go through and process each order
+    while((order = dequeue(category_q)) != NULL)
+    {
+        process_order(order, c->customer_trie);
+    }
+    return NULL;
 }
 
 void process_order(OrderInfo *o, Trie *customer_trie)
