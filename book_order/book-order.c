@@ -282,7 +282,7 @@ Trie *build_customer_trie(const char *filename) {
     while (fgets(line, sizeof(line), customer_file) != NULL) {
         customer_name = strtok(&(line[1]), "\"|");
         customer_id = strtok(NULL, "|");
-        customer_credit = (int) (atol(strtok(NULL, "|\"")) * 100);
+        customer_credit = (int) (strtof(strtok(NULL, "|\""), NULL) * 100);
         customer_address = strtok(NULL, "\"|\"");
         customer_state = strtok(NULL, "\"|\"");
         customer_zip = strtok(NULL, "\"");
@@ -318,4 +318,4 @@ void destroy_customer(Customer *cust)
     free(cust->address);
     free(cust->state);
     free(cust->zip);
-
+}
