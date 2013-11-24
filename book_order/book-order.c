@@ -157,6 +157,8 @@ void enqueue_orders(const char *filename, Trie *category_trie)
         q = (SynchQueue *) n->data;
         enqueue(q, (void *) o);
     }
+
+    fclose(f);
 }
 
 void print_results(char *cid, char *dummy, void *data,
@@ -258,6 +260,7 @@ void destroy_order_info(void *o)
 
     free(order->book_name);
     free(order->category);
+    free(order->cid);
 
     free(order);
 }
@@ -296,6 +299,8 @@ Trie *build_customer_trie(const char *filename) {
         insert_word(customer_id, new_customer, t);
     }
 
+    fclose(customer_file);
+
     return t;
 }
 
@@ -323,7 +328,10 @@ void destroy_customer(Customer *cust)
     }
 
     free(cust->name);
+    free(cust->id);
     free(cust->address);
     free(cust->state);
     free(cust->zip);
+
+    free(cust);
 }
