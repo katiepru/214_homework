@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ggdb -Wall
+CFLAGS = -ggdb -Wall -pthread
 
 all : book-order
 
