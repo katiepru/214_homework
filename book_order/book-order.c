@@ -210,6 +210,7 @@ void insert_into_queue(TrieNode *n, void *data)
 void destroy_queue(void *data)
 {
     SynchQueue *q = (SynchQueue *) data;
+    if(q == NULL) return;
     queue_destroy(q);
 }
 
