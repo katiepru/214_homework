@@ -318,6 +318,8 @@ Customer* create_customer(char* name, char* id, int credit, char* address, char*
     new_customer->failed_orders = NULL;
     new_customer->successful_orders = NULL;
 
+    pthread_mutex_init(&new_customer->lock, NULL);
+
     return new_customer;
 }
 
@@ -332,6 +334,8 @@ void destroy_customer(Customer *cust)
     free(cust->address);
     free(cust->state);
     free(cust->zip);
+
+    pthread_mutex_destroy(&(cust->lock));
 
     free(cust);
 }
