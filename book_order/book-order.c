@@ -316,6 +316,10 @@ Customer* create_customer(char* name, char* id, int credit, char* address, char*
 
 void destroy_customer(Customer *cust)
 {
+    if (cust == NULL) {
+        return;
+    }
+
     free(cust->name);
     free(cust->address);
     free(cust->state);
