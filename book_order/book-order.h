@@ -32,6 +32,12 @@ struct Customer {
 };
 typedef struct Customer Customer;
 
+typedef struct CategoryArgs CategoryArgs;
+struct CategoryArgs {
+    TrieNode *category_node;
+    Trie *customer_trie;
+};
+
 //Function declarations
 Trie *build_category_trie(char **, int, int);
 Trie *build_customer_trie(const char *);
@@ -43,6 +49,7 @@ void print_results(char *, char *, void *, void *);
 void insert_into_queue(TrieNode *, void *);
 void destroy_queue(void *);
 void destroy_customer_wrapper(void *);
+void *process_category(void *);
 void process_order(OrderInfo *, Trie *);
 
 //Struct management fuctions
