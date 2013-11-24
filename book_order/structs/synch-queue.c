@@ -92,6 +92,8 @@ void queue_destroy(SynchQueue *q)
     QueueNode *n;
     void *ret;
 
+    if(q == NULL) return;
+
     while((n = dequeue_node(q)) != NULL)
     {
         ret = destroy_queue_node(n);
