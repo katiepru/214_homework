@@ -90,6 +90,8 @@ void process_order(OrderInfo *o, Trie *customer_trie)
 
     customer = (Customer *) found->data;
 
+    pthread_mutex_lock(&(customer->lock));
+
     if(!customer->successful_orders) {
         customer->successful_orders = queue_init(destroy_customer_wrapper);
         customer->failed_orders = queue_init(destroy_customer_wrapper);
@@ -105,6 +107,8 @@ void process_order(OrderInfo *o, Trie *customer_trie)
         enqueue(customer->successful_orders, (void *) o);
         customer->credit -= o->price;
     }
+
+    pthread_mutex_unlock(&(customer->lock));
 }
 
 Trie *build_category_trie(char **args, int start, int argc)
