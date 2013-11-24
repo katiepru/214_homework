@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 
 //Local includes
 #include "structs/trie.h"
@@ -25,6 +26,7 @@ struct Customer {
     char *address;
     char *state;
     char *zip;
+    pthread_mutex_t lock;
     SynchQueue *successful_orders;
     SynchQueue *failed_orders;
 };
