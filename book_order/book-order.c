@@ -35,6 +35,10 @@ int main(int argc, char *argv[])
     //Return results for each customer
     dfs(customer_trie->head, print_results, NULL, NULL);
 
+    // Free all the things!
+    destroy_trie(customer_trie);
+    destroy_trie(order_trie);
+
     return 0;
 }
 
@@ -66,8 +70,6 @@ void process_orders(Trie *order_trie, Trie *customer_trie,
         {
             process_order(order, customer_trie);
         }
-
-        queue_destroy(curr_q);
     }
 }
 
