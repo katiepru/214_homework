@@ -142,7 +142,7 @@ void enqueue_orders(const char *filename, Trie *category_trie)
     while(fgets(buffer, sizeof(buffer), f) != NULL)
     {
         book_name = strtok(buffer, "\"|");
-        book_price = (int) (100*atol(strtok(NULL, "|")));
+        book_price = (int) (100*atof(strtok(NULL, "|")));
         customer_id = strtok(NULL, "|");
         book_category = strtok(NULL, "\n");
 
@@ -163,6 +163,7 @@ void print_results(char *cid, char *dummy, void *data,
     Customer *customer = (Customer *) data;
     OrderInfo *curr;
 
+    printf("%s - %s\n", customer->name, customer->id);
     printf("Successful orders:\n");
     if(!customer->successful_orders)
     {
