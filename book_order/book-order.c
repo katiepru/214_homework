@@ -283,6 +283,7 @@ void insert_null(char *dummy, char *dummy2, void *queue, void *null_ptr)
 {
     SynchQueue *order_queue = (SynchQueue *) queue;
     enqueue(order_queue, null_ptr);
+    sem_post(&(order_queue->semaphore));
 }
 
 //Functions to handle order info structs
