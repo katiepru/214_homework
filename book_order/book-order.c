@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
 {
     Trie *order_trie;
     Trie *customer_trie;
+    int total_revenue = 0;
 
     //Check we have the right number of arguments
     if(argc < 3)
@@ -33,7 +34,9 @@ int main(int argc, char *argv[])
     process_orders(order_trie, customer_trie, argv, 3, argc);
 
     //Return results for each customer
-    dfs(customer_trie->head, print_results, NULL, NULL);
+    dfs(customer_trie->head, print_results, (void*) &total_revenue, NULL);
+
+    printf("Total revenue: %.2f\n", (double) total_revenue / 100);
 
     // Free all the things!
     destroy_trie(customer_trie);
@@ -195,46 +198,39 @@ void enqueue_orders(const char *filename, Trie *category_trie)
 }
 
 void print_results(char *cid, char *dummy, void *data,
-                   void *dummy2)
+                   void *total_revenue)
 {
     Customer *customer = (Customer *) data;
     OrderInfo *curr;
 
-    printf("%s - %s\n", customer->name, customer->id);
-    printf("Successful orders:\n");
-    if(!customer->successful_orders)
-    {
-        printf("\tNone\n");
-    }
-    else
-    {
-        while((curr = dequeue(customer->successful_orders)) != NULL)
-        {
-            printf("\tTitle: %s\n\tPrice: %.2f\n\tMoney Remaining: %.2f\n",
-                   curr->book_name,
-                   (double) curr->price / 100,
-                   (double) curr->customer_money_remaining / 100);
-            destroy_order_info(curr);
-        }
-        queue_destroy(customer->successful_orders);
-    }
+    printf("=== BEGIN CUSTOMER INFO ===\n### BALANCE ###\n");
+    printf("Customer name: %s\n", customer->name);
+    printf("Customer ID number: %s\n", customer->id);
+    printf("Remaining credit balance after all purchases (a dollar amount): %.2f\n", (double) customer->credit / 100);
+    printf("### SUCCESSFUL ORDERS ###\n");
 
-    printf("\nUnsuccessful orders:\n");
-    if(!customer->failed_orders)
+    while((curr = dequeue(customer->successful_orders)) != NULL)
     {
-        printf("\tNone\n");
+        printf("\"%s\"| %.2f| %.2f\n",
+                curr->book_name,
+                (double) curr->price / 100,
+                (double) curr->customer_money_remaining / 100);
+        *((int*)total_revenue) += curr->price;
+        destroy_order_info(curr);
     }
-    else
+    queue_destroy(customer->successful_orders);
+
+    printf("### REJECTED ORDERS ###\n");
+    while((curr = dequeue(customer->failed_orders)) != NULL)
     {
-        while((curr = dequeue(customer->failed_orders)) != NULL)
-        {
-            printf("\tTitle: %s\n\tPrice: %.2f\n", curr->book_name,
-                   (double) curr->price / 100);
-            destroy_order_info(curr);
-        }
-        queue_destroy(customer->failed_orders);
+        printf("\"%s\"| %.2f\n",
+                curr->book_name,
+                (double) curr->price / 100);
+        destroy_order_info(curr);
     }
-    printf("\n");
+    queue_destroy(customer->failed_orders);
+
+    printf("=== END CUSTOMER INFO ===\n\n");
 }
 
 //Helpers
