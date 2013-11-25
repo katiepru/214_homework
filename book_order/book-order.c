@@ -132,6 +132,7 @@ void process_order(OrderInfo *o, Trie *customer_trie)
     }
     else
     {
+        o->customer_money_remaining = customer->credit - o->price;
         enqueue(customer->successful_orders, (void *) o);
         customer->credit -= o->price;
     }
@@ -209,8 +210,8 @@ void print_results(char *cid, char *dummy, void *data,
     {
         while((curr = dequeue(customer->successful_orders)) != NULL)
         {
-            printf("\tTitle: %s\n\tPrice: %d\n", curr->book_name,
-                   curr->price);
+            printf("\tTitle: %s\n\tPrice: %d\n\tMoney Remaining:%d\n",
+                   curr->book_name, curr->price, curr->customer_money_remaining);
             destroy_order_info(curr);
         }
         queue_destroy(customer->successful_orders);
@@ -279,6 +280,7 @@ OrderInfo *create_order(char *name, char *category,
     strcpy(o->cid, customer_id);
 
     o->price = price;
+    o->customer_money_remaining = -1;
 
     return o;
 

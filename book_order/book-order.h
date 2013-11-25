@@ -17,6 +17,7 @@ struct OrderInfo {
     char *category;
     char *cid;
     int price;
+    int customer_money_remaining;
 };
 
 struct Customer {
