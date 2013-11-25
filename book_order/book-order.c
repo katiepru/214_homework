@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
     //Now, spin up helper threads to process orders
     process_orders(order_trie, customer_trie, argv, 3, argc);
 
+    //Take care of producer
+    pthread_join(producer, NULL);
+
     //Return results for each customer
     dfs(customer_trie->head, print_results, (void*) &total_revenue, NULL);
 
@@ -52,6 +55,7 @@ int main(int argc, char *argv[])
     // Free all the things!
     destroy_trie(customer_trie);
     destroy_trie(order_trie);
+    free(enqueue_orders_args);
 
     return 0;
 }
