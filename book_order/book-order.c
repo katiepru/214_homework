@@ -210,7 +210,7 @@ void print_results(char *cid, char *dummy, void *data,
     {
         while((curr = dequeue(customer->successful_orders)) != NULL)
         {
-            printf("\tTitle: %s\n\tPrice: %.2f\n\tMoney Remaining:%.2f\n",
+            printf("\tTitle: %s\n\tPrice: %.2f\n\tMoney Remaining: %.2f\n",
                    curr->book_name,
                    (double) curr->price / 100,
                    (double) curr->customer_money_remaining / 100);
@@ -234,6 +234,7 @@ void print_results(char *cid, char *dummy, void *data,
         }
         queue_destroy(customer->failed_orders);
     }
+    printf("\n");
 }
 
 //Helpers
