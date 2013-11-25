@@ -3,6 +3,8 @@
 //Includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <semaphore.h>
+#include <pthread.h>
 
 //Struct definitions
 typedef struct QueueNode QueueNode;
@@ -17,6 +19,8 @@ struct SynchQueue {
     QueueNode *tail;
     int size;
     void (*destroy_data)(void *);
+    sem_t semaphore;
+    pthread_mutex_t mutex;
 };
 
 //Function declarations

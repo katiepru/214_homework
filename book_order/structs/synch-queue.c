@@ -7,6 +7,8 @@ void enqueue(SynchQueue *q, void *data)
 
     if(n == NULL) return;
 
+    pthread_mutex_lock(&(q->mutex));
+
     //Handle empty queue
     if(q->tail == NULL)
     {
@@ -20,21 +22,28 @@ void enqueue(SynchQueue *q, void *data)
         q->tail = n;
         q->size++;
     }
+
+    pthread_mutex_unlock(&(q->mutex));
 }
 
 void *dequeue(SynchQueue *q)
 {
+    pthread_mutex_lock(&(q->mutex));
+
     QueueNode *n = dequeue_node(q);
     void *data;
 
     if(n == NULL)
     {
+        pthread_mutex_unlock(&(q->mutex));
         return NULL;
     }
 
     data = n->data;
 
     destroy_queue_node(n);
+
+    pthread_mutex_unlock(&(q->mutex));
 
     return data;
 }
@@ -84,6 +93,9 @@ SynchQueue *queue_init(void (*destroy_data)(void *data))
     q->size = 0;
     q->destroy_data = destroy_data;
 
+    sem_init(&(q->semaphore), 0, -1);
+    pthread_mutex_init(&(q->mutex), NULL);
+
     return q;
 }
 
@@ -99,6 +111,9 @@ void queue_destroy(SynchQueue *q)
         ret = destroy_queue_node(n);
         q->destroy_data(ret);
     }
+
+    sem_destroy(&(q->semaphore));
+    pthread_mutex_destroy(&(q->mutex));
 
     free(q);
 }

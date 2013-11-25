@@ -10,6 +10,8 @@ int main(int argc, char *argv[])
     Trie *order_trie;
     Trie *customer_trie;
     int total_revenue = 0;
+    pthread_t producer;
+    EnqueueOrdersArgs *enqueue_orders_args;
 
     //Check we have the right number of arguments
     if(argc < 3)
@@ -26,11 +28,20 @@ int main(int argc, char *argv[])
     //Output information for each customer will be stored here
     customer_trie = build_customer_trie(argv[1]);
 
-    //Enqueue orders
-    enqueue_orders(argv[2], order_trie);
+    //Enqueue orders - make args struct
+    enqueue_orders_args = malloc(sizeof(EnqueueOrdersArgs));
+    if(enqueue_orders_args == NULL)
+    {
+        fprintf(stderr, "Malloc failed.\n");
+        return 2;
+    }
+    enqueue_orders_args->filename = argv[2];
+    enqueue_orders_args->order_trie = order_trie;
+
+    //Spawn producer to enqueue orders
+    pthread_create(&producer, NULL, enqueue_orders, (void *) enqueue_orders_args);
 
     //Now, spin up helper threads to process orders
-    //FIXME: Single threaded solution
     process_orders(order_trie, customer_trie, argv, 3, argc);
 
     //Return results for each customer
@@ -96,10 +107,12 @@ void *process_category(void *args)
     //Get it's queue
     category_q = (SynchQueue *) c->category_node->data;
 
+    sem_wait(&(category_q->semaphore));
     //Go through and process each order
     while((order = dequeue(category_q)) != NULL)
     {
         process_order(order, c->customer_trie);
+        sem_wait(&(category_q->semaphore));
     }
     return NULL;
 }
@@ -158,7 +171,7 @@ Trie *build_category_trie(char **args, int start, int argc)
     return t;
 }
 
-void enqueue_orders(const char *filename, Trie *category_trie)
+void *enqueue_orders(void *args)
 {
     char *book_name;
     char *book_category;
@@ -169,8 +182,13 @@ void enqueue_orders(const char *filename, Trie *category_trie)
     TrieNode *n;
     SynchQueue *q;
 
+    Trie *order_trie = ((EnqueueOrdersArgs *) args)->order_trie;
+    const char *filename = ((EnqueueOrdersArgs *) args)->filename;
+
     char buffer[1024];
     FILE *f = fopen(filename, "r");
+
+    void *end = NULL;
 
     if(f == NULL)
     {
@@ -189,12 +207,17 @@ void enqueue_orders(const char *filename, Trie *category_trie)
                         customer_id);
 
         //Enqueue struct into correct queue
-        n = find_word(book_category, category_trie);
+        n = find_word(book_category, order_trie);
         q = (SynchQueue *) n->data;
         enqueue(q, (void *) o);
+        sem_post(&(q->semaphore));
     }
 
+    dfs(order_trie->head, insert_null, end, NULL);
+
     fclose(f);
+
+    return NULL;
 }
 
 void print_results(char *cid, char *dummy, void *data,
@@ -254,6 +277,12 @@ void destroy_customer_wrapper(void *data)
 {
     Customer *c = (Customer *) data;
     destroy_customer(c);
+}
+
+void insert_null(char *dummy, char *dummy2, void *queue, void *null_ptr)
+{
+    SynchQueue *order_queue = (SynchQueue *) queue;
+    enqueue(order_queue, null_ptr);
 }
 
 //Functions to handle order info structs

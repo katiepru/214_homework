@@ -39,10 +39,16 @@ struct CategoryArgs {
     Trie *customer_trie;
 };
 
+typedef struct EnqueueOrdersArgs EnqueueOrdersArgs;
+struct EnqueueOrdersArgs {
+    const char *filename;
+    Trie *order_trie;
+};
+
 //Function declarations
 Trie *build_category_trie(char **, int, int);
 Trie *build_customer_trie(const char *);
-void enqueue_orders(const char *, Trie *);
+void *enqueue_orders(void *);
 void process_orders(Trie *, Trie *, char **, int, int);
 void print_results(char *, char *, void *, void *);
 
@@ -52,6 +58,7 @@ void destroy_queue(void *);
 void destroy_customer_wrapper(void *);
 void *process_category(void *);
 void process_order(OrderInfo *, Trie *);
+void insert_null(char *, char *, void *, void *);
 
 //Struct management fuctions
 OrderInfo *create_order(char *, char *, int, char *);
