@@ -177,8 +177,8 @@ void print_results(char *cid, char *dummy, void *data,
     {
         while((curr = dequeue(customer->successful_orders)) != NULL)
         {
-            printf("\tTitle: %s\n\tPrice: %d\n", curr->book_name,
-                   curr->price);
+            printf("\tTitle: %s\n\tPrice: %.2f\n", curr->book_name,
+                   (double) curr->price / 100);
             destroy_order_info(curr);
         }
         queue_destroy(customer->successful_orders);
@@ -193,8 +193,8 @@ void print_results(char *cid, char *dummy, void *data,
     {
         while((curr = dequeue(customer->failed_orders)) != NULL)
         {
-            printf("\tTitle: %s\n\tPrice: %d\n", curr->book_name,
-                   curr->price);
+            printf("\tTitle: %s\n\tPrice: %.2f\n", curr->book_name,
+                   (double) curr->price / 100);
             destroy_order_info(curr);
         }
         queue_destroy(customer->failed_orders);
