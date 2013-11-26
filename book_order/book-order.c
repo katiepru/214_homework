@@ -60,6 +60,10 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+/*
+ * Spawns one consumer thread per category
+ * These consumer threads call process_category
+ */
 void process_orders(Trie *order_trie, Trie *customer_trie,
                     char **args, int start, int argc)
 {
@@ -102,6 +106,13 @@ void process_orders(Trie *order_trie, Trie *customer_trie,
     }
 }
 
+/*
+ * Run by each consumer thread
+ * While we have not reach the end of the orders for this category,
+ * use a semaphore to wait until something in enqueued
+ * dequeue and process the order
+ * Returns NULL always
+ */
 void *process_category(void *args)
 {
     OrderInfo *order;
@@ -121,6 +132,10 @@ void *process_category(void *args)
     return NULL;
 }
 
+/*
+ * Thread locks customer object and processes the current order
+ * Unlocks once it is done modifying customer struct
+ */
 void process_order(OrderInfo *o, Trie *customer_trie)
 {
     Customer *customer;
@@ -160,6 +175,11 @@ void process_order(OrderInfo *o, Trie *customer_trie)
     pthread_mutex_unlock(&(customer->lock));
 }
 
+/*
+ * Reads through category names and builds prefix tree
+ * Each end node will have a pointer to a queue of orders
+ * for that category
+ */
 Trie *build_category_trie(char **args, int start, int argc)
 {
     Trie *t = create_trie(destroy_queue, insert_into_queue);
@@ -175,6 +195,57 @@ Trie *build_category_trie(char **args, int start, int argc)
     return t;
 }
 
+/*
+ * Builds the customer trie from customer database file
+ * Uses customer ids as words in trie
+ */
+Trie *build_customer_trie(const char *filename) {
+    Trie *t;
+    FILE *customer_file;
+    char line[1024];
+    char *customer_name;
+    char *customer_id;
+    int customer_credit;
+    char *customer_address;
+    char *customer_state;
+    char *customer_zip;
+    Customer *new_customer;
+
+
+    customer_file = fopen(filename, "r");
+    if (customer_file == NULL) {
+        fprintf(stderr, "Failed to open file %s\n", filename);
+        return NULL;
+    }
+
+    t = create_trie(destroy_customer_wrapper, insert_into_queue);
+
+    while (fgets(line, sizeof(line), customer_file) != NULL) {
+        customer_name = strtok(&(line[1]), "\"|");
+        customer_id = strtok(NULL, "|");
+        customer_credit = (int) (strtof(strtok(NULL, "|\""), NULL) * 100);
+        customer_address = strtok(NULL, "\"|\"");
+        customer_state = strtok(NULL, "\"|\"");
+        customer_zip = strtok(NULL, "\"");
+
+        new_customer = create_customer(customer_name, customer_id, customer_credit, customer_address, customer_state, customer_zip);
+
+        insert_word(customer_id, new_customer, t);
+    }
+
+    fclose(customer_file);
+
+    return t;
+}
+
+/*
+ * Producer thread reads in orders file
+ * An OrderInfo struct is created and enqueued into the appropriate
+ * category queue in the order trie
+ * Once something is enqueued, post to the semaphore
+ * Add a NULL OrderInfo struct as the last item in the queue to signal
+ * that we are done once we see it
+ */
 void *enqueue_orders(void *args)
 {
     char *book_name;
@@ -224,6 +295,10 @@ void *enqueue_orders(void *args)
     return NULL;
 }
 
+/*
+ * Print out results from customer trie
+ * Calculates total revenue as well
+ */
 void print_results(char *cid, char *dummy, void *data,
                    void *total_revenue)
 {
@@ -262,6 +337,9 @@ void print_results(char *cid, char *dummy, void *data,
 
 //Helpers
 
+/*
+ * Wrapper to set data in trie
+ */
 void insert_into_queue(TrieNode *n, void *data)
 {
     if(n->data == NULL)
@@ -270,6 +348,9 @@ void insert_into_queue(TrieNode *n, void *data)
     }
 }
 
+/*
+ * Wrapper to destroy queue in trie
+ */
 void destroy_queue(void *data)
 {
     SynchQueue *q = (SynchQueue *) data;
@@ -277,12 +358,18 @@ void destroy_queue(void *data)
     queue_destroy(q);
 }
 
+/*
+ * Wrapper to destroy customer in trie
+ */
 void destroy_customer_wrapper(void *data)
 {
     Customer *c = (Customer *) data;
     destroy_customer(c);
 }
 
+/*
+ * Inserts NULL into each queue in the orders trie
+ */
 void insert_null(char *dummy, char *dummy2, void *queue, void *null_ptr)
 {
     SynchQueue *order_queue = (SynchQueue *) queue;
@@ -292,6 +379,9 @@ void insert_null(char *dummy, char *dummy2, void *queue, void *null_ptr)
 
 //Functions to handle order info structs
 
+/*
+ * Malloc and initialize OrderInfo struct
+ */
 OrderInfo *create_order(char *name, char *category,
                        int price, char *customer_id)
 {
@@ -319,6 +409,9 @@ OrderInfo *create_order(char *name, char *category,
 
 }
 
+/*
+ * Free OrderInfo struct
+ */
 void destroy_order_info(void *o)
 {
     if(o == NULL) return;
@@ -332,46 +425,9 @@ void destroy_order_info(void *o)
     free(order);
 }
 
-Trie *build_customer_trie(const char *filename) {
-    Trie *t;
-    FILE *customer_file;
-    char line[1024];
-    char *customer_name;
-    char *customer_id;
-    int customer_credit;
-    char *customer_address;
-    char *customer_state;
-    char *customer_zip;
-    Customer *new_customer;
-
-
-    customer_file = fopen(filename, "r");
-    if (customer_file == NULL) {
-        fprintf(stderr, "Failed to open file %s\n", filename);
-        return NULL;
-    }
-
-    t = create_trie(destroy_customer_wrapper, insert_into_queue);
-
-    while (fgets(line, sizeof(line), customer_file) != NULL) {
-        customer_name = strtok(&(line[1]), "\"|");
-        customer_id = strtok(NULL, "|");
-        customer_credit = (int) (strtof(strtok(NULL, "|\""), NULL) * 100);
-        customer_address = strtok(NULL, "\"|\"");
-        customer_state = strtok(NULL, "\"|\"");
-        customer_zip = strtok(NULL, "\"");
-
-        new_customer = create_customer(customer_name, customer_id, customer_credit, customer_address, customer_state, customer_zip);
-
-        insert_word(customer_id, new_customer, t);
-    }
-
-    fclose(customer_file);
-
-    return t;
-}
-
-
+/*
+ * Malloc and initialize Customer struct
+ */
 Customer* create_customer(char* name, char* id, int credit, char* address, char* state, char* zip)
 {
     Customer *new_customer = malloc(sizeof(Customer));
@@ -390,6 +446,9 @@ Customer* create_customer(char* name, char* id, int credit, char* address, char*
     return new_customer;
 }
 
+/*
+ * Free customer struct
+ */
 void destroy_customer(Customer *cust)
 {
     if (cust == NULL) {
