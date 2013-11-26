@@ -148,8 +148,8 @@ void process_order(OrderInfo *o, Trie *customer_trie)
 
     if(!found || found->data == NULL)
     {
-        fprintf(stderr, "Could not find customer %s.\n", o->cid);
-        return;
+        fprintf(stderr, "BAD INPUT: COULD NOT FIND CUSTOMER WITH ID %s\n", o->cid);
+        exit(1);
     }
 
     customer = (Customer *) found->data;
@@ -311,6 +311,10 @@ void *enqueue_orders(void *args)
 
         //Enqueue struct into correct queue
         n = find_word(book_category, order_trie);
+        if (n == NULL || n->data == NULL) {
+            fprintf(stderr, "BAD INPUT: INVALID CATEGORY: %s\n", book_category);
+            exit(1);
+        }
         q = (SynchQueue *) n->data;
         enqueue(q, (void *) o);
         sem_post(&(q->semaphore));
