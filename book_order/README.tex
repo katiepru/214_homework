@@ -1,0 +1,59 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[margin=.5in]{geometry}
+
+\begin{document}
+
+\noindent Joshua Matthews \& Kaitlin Poskaitis
+
+\noindent Systems Programming
+
+\noindent Book Order
+
+\section{Design}
+This program processes a series of book orders in multiple threads. When run it
+creates a single producer thread to generate the data, and several consumer
+threads to process it. The specifics of each step are described below.
+
+\subsection{Customer and Order Databases}
+The list of customers and their information is read from a file and stored in a
+prefix tree before any threads are created. The struct used to store each
+customers information includes a mutex prevent race conditions, and a queue to
+store their transaction history. The orders are also stored in a prefix tree
+containing synchronous queues. This tree is also built before spawning threads,
+but the queues are initially left empty. They are later populated by the
+producer thread.
+
+\subsection{Synchronous Queues}
+The synchronous queues are constructed using an internal linked lists, and each
+queue has a mutex and semaphore. The mutex is used to lock the structure when
+enqueuing or dequeuing, and the semaphore acts as a counter to indicate when
+there are enqueued items waiting to be processed.
+
+\subsection{Producer Thread}
+The producer tread reads in orders from a file, and enqueues each one into the
+appropriate category in the categories prefix tree. Upon enqueueing an item, it
+posts to that queue's semaphore to signal it's consumer thread to process the
+data. Once all orders have been processed and enqueued, NULL is enqueued into
+each queue, which signals all the consumer threads to shut down.
+
+\subsection{Consumer Threads}
+A consumer thread is spawned for each book category given in the input. Each
+consumer thread watches the queue associated with it's category and waits on
+its semaphore. When the producer thread posts to the semaphore, this signals
+the producer thread to process the incoming data, after which it dequeues and
+processes the new data. If a value of NULL is dequeued the thread exits, since
+this value acts as a sentinel to signal that all orders have been processed.
+
+\subsection{Final Output}
+Once the producer and all consumer threads exit, each customers order history is
+printed out. As this is done a total revenue is calculated from all successful
+transactions, and printed at the end.
+
+\section{Efficiency}
+Building the customer and order databases is accomplished in O(n) by using
+prefix trees. Enqueueing and dequeuing also takes O(n). Finally, signalling each
+thread to exit and outputting each customers transaction history is done through
+a DFS on each prefix tree, which is also O(n).
+
+\end{document}
