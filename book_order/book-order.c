@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
     pthread_join(producer, NULL);
 
     //Return results for each customer
+    printf("\n\n~~~~~~FINAL REPORT~~~~~~\n");
     dfs(customer_trie->head, print_results, (void*) &total_revenue, NULL);
 
     printf("Total revenue: %.2f\n", (double) total_revenue / 100);
@@ -163,6 +164,16 @@ void process_order(OrderInfo *o, Trie *customer_trie)
     //Cannot afford this book
     if(customer->credit < o->price)
     {
+        printf("=== REJECTED ORDER ===\n"
+        "Customer:\n\t%s\n"
+        "Available Credit:\n\t%.2f\n"
+        "Book:\n\t%s\n"
+        "\t%.2f\n",
+        customer->name,
+        (double) customer->credit / 100,
+        o->book_name,
+        (double) o->price / 100);
+
         enqueue(customer->failed_orders, (void *) o);
     }
     else
@@ -170,6 +181,22 @@ void process_order(OrderInfo *o, Trie *customer_trie)
         o->customer_money_remaining = customer->credit - o->price;
         enqueue(customer->successful_orders, (void *) o);
         customer->credit -= o->price;
+
+        printf("=== SUCCESSFUL ORDER ===\n"
+        "Book:\n"
+        "\t%s\n"
+        "\t%.2f\n"
+        "Ship To:\n"
+        "\t%s\n"
+        "\t%s\n"
+        "\t%s\n"
+        "\t%s\n",
+        o->book_name,
+        (double) o->price / 100,
+        customer->name,
+        customer->address,
+        customer->state,
+        customer->zip);
     }
 
     pthread_mutex_unlock(&(customer->lock));
@@ -226,7 +253,7 @@ Trie *build_customer_trie(const char *filename) {
         customer_credit = (int) (strtof(strtok(NULL, "|\""), NULL) * 100);
         customer_address = strtok(NULL, "\"|\"");
         customer_state = strtok(NULL, "\"|\"");
-        customer_zip = strtok(NULL, "\"");
+        customer_zip = strtok(NULL, "|\"");
 
         new_customer = create_customer(customer_name, customer_id, customer_credit, customer_address, customer_state, customer_zip);
 
