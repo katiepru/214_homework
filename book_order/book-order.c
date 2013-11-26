@@ -242,7 +242,7 @@ Trie *build_customer_trie(const char *filename) {
     customer_file = fopen(filename, "r");
     if (customer_file == NULL) {
         fprintf(stderr, "Failed to open file %s\n", filename);
-        return NULL;
+        exit(2);
     }
 
     t = create_trie(destroy_customer_wrapper, insert_into_queue);
@@ -295,6 +295,7 @@ void *enqueue_orders(void *args)
     if(f == NULL)
     {
         fprintf(stderr, "Failed to open file %s.\n", filename);
+        exit(2);
     }
 
     while(fgets(buffer, sizeof(buffer), f) != NULL)
