@@ -93,7 +93,7 @@ SynchQueue *queue_init(void (*destroy_data)(void *data))
     q->size = 0;
     q->destroy_data = destroy_data;
 
-    sem_init(&(q->semaphore), 0, -1);
+    sem_init(&(q->semaphore), 0, 0);
     pthread_mutex_init(&(q->mutex), NULL);
 
     return q;
