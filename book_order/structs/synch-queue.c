@@ -1,6 +1,11 @@
 #include "synch-queue.h"
 
 //Queue use functions
+
+/*
+ * Enqueue an item
+ * Locks queue during this process
+ */
 void enqueue(SynchQueue *q, void *data)
 {
     QueueNode *n = create_queue_node(data);
@@ -26,6 +31,10 @@ void enqueue(SynchQueue *q, void *data)
     pthread_mutex_unlock(&(q->mutex));
 }
 
+/*
+ * Dequeue an item
+ * Locks the queue during this process
+ */
 void *dequeue(SynchQueue *q)
 {
     pthread_mutex_lock(&(q->mutex));
@@ -48,6 +57,10 @@ void *dequeue(SynchQueue *q)
     return data;
 }
 
+/*
+ * Dequeue a QueueNode
+ * Not thread safe - doesn't need to be
+ */
 QueueNode *dequeue_node(SynchQueue *q)
 {
     QueueNode *ret;
@@ -78,6 +91,9 @@ QueueNode *dequeue_node(SynchQueue *q)
 
 //SynchQueue memory management
 
+/*
+ * Malloc and initialize a queue
+ */
 SynchQueue *queue_init(void (*destroy_data)(void *data))
 {
     SynchQueue *q = malloc(sizeof(SynchQueue));
@@ -99,6 +115,9 @@ SynchQueue *queue_init(void (*destroy_data)(void *data))
     return q;
 }
 
+/*
+ * Free a queue
+ */
 void queue_destroy(SynchQueue *q)
 {
     QueueNode *n;
@@ -120,6 +139,9 @@ void queue_destroy(SynchQueue *q)
 
 //QueueNode memory management
 
+/*
+ * Malloc and initialize a queue node
+ */
 QueueNode *create_queue_node(void *data)
 {
     QueueNode *n = malloc(sizeof(QueueNode));
@@ -136,6 +158,9 @@ QueueNode *create_queue_node(void *data)
     return n;
 }
 
+/*
+ * Free a queue node
+ */
 void *destroy_queue_node(QueueNode *n)
 {
     void *data = n->data;
