@@ -1,7 +1,5 @@
 #include "my_malloc.h"
 
-static char big_block[BLOCKSIZE];
-
 // return a pointer to the memory buffer requested
 void* my_malloc(unsigned int size, const char *calling_file, const int calling_line)
 {
@@ -65,9 +63,16 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     struct MemEntry *succ;
 
     ptr = (struct MemEntry*)((char*)p - sizeof(struct MemEntry));
+
+    if ((void*)ptr < (void*)&big_block || (void*)ptr >= (void*)(&big_block + BLOCKSIZE - sizeof(struct MemEntry) - 1))
+    {
+        // they asked us to free something outside of our memory pool
+        fprintf(stderr, "ERROR: calling free on pointer outside bounds of memory pool. %s:%d\n", calling_file, calling_line);
+        return 1;
+    }
     if (ptr->isfree)
     {
-        //the block was alread freed. report error.
+        //the block was alread freed. report error
         fprintf(stderr, "ERROR: calling free on already freed block. %s:%d\n", calling_file, calling_line);
         return 1;
     }

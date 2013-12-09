@@ -5,6 +5,8 @@
 // Size of char array to allocate and use as memory pool
 #define BLOCKSIZE   100000
 
+static char big_block[BLOCKSIZE];
+
 void* my_malloc(unsigned int, const char*, const int);
 
 int my_free(void*, const char*, const int);

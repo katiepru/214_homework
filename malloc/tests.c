@@ -54,5 +54,27 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /**************************************************
+    *  Test for freeing pointer not in memory pool.  *
+    **************************************************/
+    if (free(&big_block - 100) == 1)
+    {
+        printf("[32mError checking for freeing pointer before memory pool works.[m\n");
+    }
+    else
+    {
+        printf("[31mERROR: checking for freeing pointer before memory pool fails.[m\n");
+        return 1;
+    }
+    if (free(&big_block + BLOCKSIZE + 100) == 1)
+    {
+        printf("[32mError checking for freeing pointer after memory pool works.[m\n");
+    }
+    else
+    {
+        printf("[31mERROR: checking for freeing pointer after memory pool fails.[m\n");
+        return 1;
+    }
+
     return 0;
 }
