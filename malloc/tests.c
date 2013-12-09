@@ -2,11 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#define malloc(x) my_malloc(x, __FILE__, __LINE__)
+#define free(x) my_free(x, __FILE__, __LINE__)
+
 int main(int argc, char *argv[])
 {
     int i;
 
-    char *mystr = my_malloc(sizeof(char) * 10);
+    char *mystr = malloc(sizeof(char) * 10);
     for (i = 0; i < 10; ++i)
     {
         mystr[i] = (char) (97 + i);
