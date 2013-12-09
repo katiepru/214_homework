@@ -99,10 +99,8 @@ int my_free(void *p, const char *calling_file, const int calling_line)
         prev->size += sizeof(struct MemEntry) + ptr->size;
         prev->succ = ptr->succ;
     }
-    else
-    {
-        ptr->isfree = 1;
-    }
+    // do this anyway for the error checks up above
+    ptr->isfree = 1;
 
     return 0;
 }
