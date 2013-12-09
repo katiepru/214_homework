@@ -1,12 +1,11 @@
 #ifndef _MY_MALLOC
 
 #include <stdio.h>
+#include <pthread.h>
 
 // Size of char array to allocate and use as memory pool
 #define BLOCKSIZE   100000
 #define BITSIG      295723045
-
-static char big_block[BLOCKSIZE];
 
 void* my_malloc(unsigned int, const char*, const int);
 

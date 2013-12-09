@@ -1,5 +1,8 @@
 #include "my_malloc.h"
 
+static char big_block[BLOCKSIZE];
+static pthread_mutex_t my_malloc_mutex;
+
 // return a pointer to the memory buffer requested
 void* my_malloc(unsigned int size, const char *calling_file, const int calling_line)
 {
@@ -11,6 +14,7 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
     if(!initialized)    // 1st time called
     {
         // create a root chunk at the beginning of the memory block
+        pthread_mutex_init(&my_malloc_mutex, NULL);
         root = (struct MemEntry*)big_block;
         root->prev = root->succ = 0;
         root->size = BLOCKSIZE - sizeof(struct MemEntry);
@@ -18,6 +22,7 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
         root->sig = BITSIG;
         initialized = 1;
     }
+    pthread_mutex_lock(&my_malloc_mutex);
     p = root;
     do
     {
@@ -37,6 +42,7 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
             // but there's not enough memory to hold the HEADER of the next chunk
             // don't create any more chunks after this one
             p->isfree = 0;
+            pthread_mutex_unlock(&my_malloc_mutex);
             return (char*)p + sizeof(struct MemEntry);
         }
         else
@@ -50,11 +56,13 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
             p->size = size;
             p->isfree = 0;
             p->succ = succ;
+            pthread_mutex_unlock(&my_malloc_mutex);
             return (char*)p + sizeof(struct MemEntry);
         }
     } while(p != 0);
 
     // checked the entire pool, couldn't find a suitable memory block
+    pthread_mutex_unlock(&my_malloc_mutex);
     return NULL;
 }
 
@@ -66,24 +74,28 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     struct MemEntry *prev;
     struct MemEntry *succ;
 
+    pthread_mutex_lock(&my_malloc_mutex);
     ptr = (struct MemEntry*)((char*)p - sizeof(struct MemEntry));
 
     if ((void*)ptr < (void*)&big_block || (void*)ptr >= (void*)(&big_block + BLOCKSIZE - sizeof(struct MemEntry) - 1))
     {
         // they asked us to free something outside of our memory pool
         fprintf(stderr, "ERROR: calling free on pointer outside bounds of memory pool. %s:%d\n", calling_file, calling_line);
+        pthread_mutex_unlock(&my_malloc_mutex);
         return 1;
     }
     if (ptr->sig != BITSIG)
     {
         // the bit signature isn't here. must have been givena bad pointer
         fprintf(stderr, "ERROR: calling free on pointer not returned from malloc. %s:%d\n", calling_file, calling_line);
+        pthread_mutex_unlock(&my_malloc_mutex);
         return 1;
     }
     if (ptr->isfree)
     {
         //the block was alread freed. report error
         fprintf(stderr, "ERROR: calling free on already freed block. %s:%d\n", calling_file, calling_line);
+        pthread_mutex_unlock(&my_malloc_mutex);
         return 1;
     }
     if ((succ = ptr->succ) != 0 && succ->isfree)
@@ -102,5 +114,6 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     // do this anyway for the error checks up above
     ptr->isfree = 1;
 
+    pthread_mutex_unlock(&my_malloc_mutex);
     return 0;
 }
