@@ -90,5 +90,19 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /*******************************************
+    *  Test running out of available memory.  *
+    *******************************************/
+    mystr = malloc(BLOCKSIZE - sizeof(struct MemEntry));
+    if (malloc(1) != NULL)
+    {
+        printf("[32mDetecting out of memory works.[m\n");
+    }
+    else
+    {
+        printf("[31mDetecting out of memory fails.[m\n");
+        return 1;
+    }
+
     return 0;
 }
