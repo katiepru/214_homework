@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define malloc(x) my_malloc(x, __FILE__, __LINE__)
-#define free(x) my_free(x, __FILE__, __LINE__)
-
 int main(int argc, char *argv[])
 {
     int i;

@@ -5,7 +5,13 @@
 
 // Size of char array to allocate and use as memory pool
 #define BLOCKSIZE   100000
+// Random number to check if we're actually pointing to a MemEntry
 #define BITSIG      295723045
+
+// Redefine malloc and free when someone includes our header
+#define malloc(x) my_malloc(x, __FILE__, __LINE__)
+#define free(x) my_free(x, __FILE__, __LINE__)
+
 
 void* my_malloc(unsigned int, const char*, const int);
 
