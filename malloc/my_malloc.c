@@ -65,6 +65,12 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     struct MemEntry *succ;
 
     ptr = (struct MemEntry*)((char*)p - sizeof(struct MemEntry));
+    if (ptr->isfree)
+    {
+        //the block was alread freed. report error.
+        fprintf(stderr, "ERROR: calling free on already freed block. %s:%d\n", calling_file, calling_line);
+        return 1;
+    }
     if((prev = ptr->prev) != 0 && prev->isfree)
     {
         // the previous chunk is free, so

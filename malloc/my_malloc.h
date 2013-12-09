@@ -1,5 +1,7 @@
 #ifndef _MY_MALLOC
 
+#include <stdio.h>
+
 // Size of char array to allocate and use as memory pool
 #define BLOCKSIZE   100000
 
