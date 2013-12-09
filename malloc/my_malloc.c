@@ -7,9 +7,12 @@ static pthread_mutex_t my_malloc_mutex;
 void* my_malloc(unsigned int size, const char *calling_file, const int calling_line)
 {
     static int      initialized = 0;
-    static struct MemEntry *root;
-    struct MemEntry *p;
-    struct MemEntry *succ;
+    static struct   MemEntry *root;
+    struct          MemEntry *p;
+    struct          MemEntry *succ;
+    struct          MemEntry *smallest;
+
+    smallest = NULL;
 
     if(!initialized)    // 1st time called
     {
@@ -26,44 +29,42 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
     p = root;
     do
     {
-        if(p->size < size)
+        if(p->isfree && p->size >= size && (smallest == NULL || p->size < smallest->size))
         {
-            // the current chunk is smaller, go to the next chunk
-            p = p->succ;
+            smallest = p;
         }
-        else if(!p->isfree)
-        {
-            // this chunk was taken, go to the next
-            p = p->succ;
-        }
-        else if(p->size < (size + sizeof(struct MemEntry)))
-        {
-            // this chunk is free and large enough to hold data,
-            // but there's not enough memory to hold the HEADER of the next chunk
-            // don't create any more chunks after this one
-            p->isfree = 0;
-            pthread_mutex_unlock(&my_malloc_mutex);
-            return (char*)p + sizeof(struct MemEntry);
-        }
-        else
-        {
-            // take the needed memory and create the header of the next chunk
-            succ = (struct MemEntry*)((char*)p + sizeof(struct MemEntry) + size);
-            succ->prev = p;
-            succ->succ = p->succ;
-            succ->size = p->size - sizeof(struct MemEntry) - size;
-            succ->sig  = BITSIG;
-            p->size = size;
-            p->isfree = 0;
-            p->succ = succ;
-            pthread_mutex_unlock(&my_malloc_mutex);
-            return (char*)p + sizeof(struct MemEntry);
-        }
+        p = p->succ;
     } while(p != 0);
 
-    // checked the entire pool, couldn't find a suitable memory block
-    pthread_mutex_unlock(&my_malloc_mutex);
-    return NULL;
+    if (smallest == NULL)
+    {
+        // checked the entire pool, couldn't find a suitable memory block
+        pthread_mutex_unlock(&my_malloc_mutex);
+        return NULL;
+    }
+    else if(smallest->size < (size + sizeof(struct MemEntry)))
+    {
+        // this chunk is free and large enough to hold data,
+        // but there's not enough memory to hold the HEADER of the next chunk
+        // don't create any more chunks after this one
+        smallest->isfree = 0;
+        pthread_mutex_unlock(&my_malloc_mutex);
+        return (char*)smallest + sizeof(struct MemEntry);
+    }
+    else
+    {
+        // take the needed memory and create the header of the next chunk
+        succ = (struct MemEntry*)((char*)smallest + sizeof(struct MemEntry) + size);
+        succ->prev = smallest;
+        succ->succ = smallest->succ;
+        succ->size = smallest->size - sizeof(struct MemEntry) - size;
+        succ->sig  = BITSIG;
+        smallest->size = size;
+        smallest->isfree = 0;
+        smallest->succ = succ;
+        pthread_mutex_unlock(&my_malloc_mutex);
+        return (char*)smallest + sizeof(struct MemEntry);
+    }
 }
 
 
