@@ -86,6 +86,12 @@ int my_free(void *p, const char *calling_file, const int calling_line)
         fprintf(stderr, "ERROR: calling free on already freed block. %s:%d\n", calling_file, calling_line);
         return 1;
     }
+    if ((succ = ptr->succ) != 0 && succ->isfree)
+    {
+        // succ is free, merge it into this block
+        ptr->size +=  sizeof(struct MemEntry) + succ->size;
+        ptr->succ = succ->succ;
+    }
     if((prev = ptr->prev) != 0 && prev->isfree)
     {
         // the previous chunk is free, so
@@ -96,14 +102,6 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     else
     {
         ptr->isfree = 1;
-        prev = ptr; // used for the step below
-    }
-
-    if((succ = ptr->succ) != 0 && succ->isfree)
-    {
-        // the next chunk is free, merge with it
-        prev->size += sizeof(struct MemEntry) + succ->size;
-        prev->isfree = 1;
     }
 
     return 0;
