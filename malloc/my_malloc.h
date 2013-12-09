@@ -4,6 +4,7 @@
 
 // Size of char array to allocate and use as memory pool
 #define BLOCKSIZE   100000
+#define BITSIG      295723045
 
 static char big_block[BLOCKSIZE];
 
@@ -13,7 +14,8 @@ int my_free(void*, const char*, const int);
 
 struct MemEntry
 {
-    struct MemEntry *prev, *succ;
+    struct  MemEntry *prev, *succ;
+    int     sig;
     int     isfree;     // 1 - yes, 0 - no
     int     size;
 };

@@ -76,5 +76,19 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /****************************************************************************
+    *  Test calling free on pointer inside pool but not returned from malloc.  *
+    ****************************************************************************/
+
+    if (free(mystr + 10) == 1)
+    {
+        printf("[32mError checking calling free on pointer not returned from malloc works.[m\n");
+    }
+    else
+    {
+        printf("[31mERROR: calling free on pointer not returned from malloc fails.[m\n");
+        return 1;
+    }
+
     return 0;
 }

@@ -15,6 +15,7 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
         root->prev = root->succ = 0;
         root->size = BLOCKSIZE - sizeof(struct MemEntry);
         root->isfree = 1;
+        root->sig = BITSIG;
         initialized = 1;
     }
     p = root;
@@ -45,6 +46,7 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
             succ->prev = p;
             succ->succ = p->succ;
             succ->size = p->size - sizeof(struct MemEntry) - size;
+            succ->sig  = BITSIG;
             p->size = size;
             p->isfree = 0;
             return (char*)p + sizeof(struct MemEntry);
@@ -68,6 +70,12 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     {
         // they asked us to free something outside of our memory pool
         fprintf(stderr, "ERROR: calling free on pointer outside bounds of memory pool. %s:%d\n", calling_file, calling_line);
+        return 1;
+    }
+    if (ptr->sig != BITSIG)
+    {
+        // the bit signature isn't here. must have been givena bad pointer
+        fprintf(stderr, "ERROR: calling free on pointer not returned from malloc. %s:%d\n", calling_file, calling_line);
         return 1;
     }
     if (ptr->isfree)
