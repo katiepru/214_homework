@@ -49,11 +49,13 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
             succ->sig  = BITSIG;
             p->size = size;
             p->isfree = 0;
+            p->succ = succ;
             return (char*)p + sizeof(struct MemEntry);
         }
     } while(p != 0);
 
-    return 0;
+    // checked the entire pool, couldn't find a suitable memory block
+    return NULL;
 }
 
 
@@ -89,6 +91,7 @@ int my_free(void *p, const char *calling_file, const int calling_line)
         // the previous chunk is free, so
         // merge this chunk with the previous chunk
         prev->size += sizeof(struct MemEntry) + ptr->size;
+        prev->succ = ptr->succ;
     }
     else
     {
