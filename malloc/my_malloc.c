@@ -1,11 +1,4 @@
-struct MemEntry
-{
-    struct MemEntry *prev, *succ;
-    int     isfree;     // 1 - yes, 0 - no
-    int     size;
-};
-
-#define BLOCKSIZE   100000
+#include "my_malloc.h"
 
 static char big_block[BLOCKSIZE];
 

@@ -3,7 +3,7 @@ CFLAGS = -ggdb -Wall
 
 all : my_malloc.o
 
-my_malloc.o: my_malloc.c
+my_malloc.o: my_malloc.c my_malloc.h
 	$(CC) $(CFLAGS) -c my_malloc.c
 
 clean :
