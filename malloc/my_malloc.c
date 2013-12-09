@@ -58,7 +58,7 @@ void* my_malloc(unsigned int size)
 
 
 // free a memory buffer pointed to by p
-void my_free(void *p)
+int my_free(void *p)
 {
     struct MemEntry *ptr;
     struct MemEntry *prev;
@@ -83,4 +83,6 @@ void my_free(void *p)
         prev->size += sizeof(struct MemEntry) + succ->size;
         prev->isfree = 1;
     }
+
+    return 0;
 }

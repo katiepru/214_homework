@@ -5,7 +5,7 @@
 
 void* my_malloc(unsigned int);
 
-void my_free(void*);
+int my_free(void*);
 
 struct MemEntry
 {
