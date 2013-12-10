@@ -1,4 +1,4 @@
-#include "my_malloc.h"
+#include "my_malloc.c"
 #include <stdio.h>
 #include <string.h>
 
@@ -54,13 +54,22 @@ int main(int argc, char *argv[])
     /**************************************************
     *  Test for freeing pointer not in memory pool.  *
     **************************************************/
-    if (free(mystr - sizeof(struct MemEntry) - 20) == 1)
+    if (free(&big_block) == 1)
     {
         printf("[32mError checking for freeing pointer before memory pool works.[m\n");
     }
     else
     {
         printf("[31mERROR: checking for freeing pointer before memory pool fails.[m\n");
+        return 1;
+    }
+    if (free(&big_block + BLOCKSIZE) == 1)
+    {
+        printf("[32mError checking for freeing pointer after memory pool works.[m\n");
+    }
+    else
+    {
+        printf("[31mERROR: checking for freeing pointer after memory pool fails.[m\n");
         return 1;
     }
 
