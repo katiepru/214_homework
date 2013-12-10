@@ -1,6 +1,8 @@
 Extra Test Cases
 ================
 
+To run the tests, run make && ./tests
+
 Basic Malloc Usage
 ------------------
 

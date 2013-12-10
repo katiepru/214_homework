@@ -3,7 +3,13 @@
 static char big_block[BLOCKSIZE];
 static pthread_mutex_t my_malloc_mutex;
 
-// return a pointer to the memory buffer requested
+/*
+ * Return a pointer to an allocated memory block, or NULL if none are availabile
+ *
+ * size: bytes of memory requested
+ * calling_file: name of source file containing the call
+ * calling_line: line number of source file containing the call
+ */
 void* my_malloc(size_t size, const char *calling_file, const int calling_line)
 {
     static int      initialized = 0;
@@ -69,7 +75,14 @@ void* my_malloc(size_t size, const char *calling_file, const int calling_line)
 }
 
 
-// free a memory buffer pointed to by p
+/*
+ * Free a previously allocated block. Returns 0 on success or 1 on failure.
+ *
+ * p: pointer previously returned from my_malloc()
+ *
+ * calling_file: name of source file containing the call
+ * calling_line: line number of source file containing the call
+ */
 int my_free(void *p, const char *calling_file, const int calling_line)
 {
     struct MemEntry *ptr;
