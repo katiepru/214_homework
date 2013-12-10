@@ -13,7 +13,7 @@
 #define free(x) my_free(x, __FILE__, __LINE__)
 
 
-void* my_malloc(unsigned int, const char*, const int);
+void* my_malloc(size_t, const char*, const int);
 
 int my_free(void*, const char*, const int);
 

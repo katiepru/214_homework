@@ -1,0 +1,52 @@
+Extra Test Cases
+================
+
+Basic Malloc Usage
+------------------
+
+Input: malloc(20);
+Output: void pointer
+
+
+Basic Free Usage
+----------------
+
+Input: free(<pointer returned from malloc()>)
+Output: 0
+
+
+Double Free
+-----------
+
+Input: free(<previously freed pointer>)
+Output: 1
+
+
+Free Pointer Outside Dynamic Memory
+-----------------------------------
+
+Input: free(<pointer outside dynamic memory pool>)
+Output: 1
+
+
+Free Invalid Pointer Inside Dynamic Memory
+------------------------------------------
+
+Input: free(<invalid pointer>)
+Output: 1
+
+
+Test Out Of Available Memory
+----------------------------
+
+Input: malloc(<total size of memory>) and then malloc(10)
+Output: void pointer and then NULL
+
+
+Test For Reducing Fragmentation
+-------------------------------
+
+Input:   malloc(<1/2 of total memory pool>) then malloc(<1/4 of total memory pool>)
+         then free(<first 1/2 of memory pool>) then malloc(<1/4 of total memory pool>)
+         then malloc(<1/2 of total memory pool>)
+Output:  All calls to malloc should succeed and return a void pointer.

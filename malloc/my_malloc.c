@@ -4,7 +4,7 @@ static char big_block[BLOCKSIZE];
 static pthread_mutex_t my_malloc_mutex;
 
 // return a pointer to the memory buffer requested
-void* my_malloc(unsigned int size, const char *calling_file, const int calling_line)
+void* my_malloc(size_t size, const char *calling_file, const int calling_line)
 {
     static int      initialized = 0;
     static struct   MemEntry *root;
