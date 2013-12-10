@@ -59,6 +59,7 @@ void* my_malloc(unsigned int size, const char *calling_file, const int calling_l
         succ->succ = smallest->succ;
         succ->size = smallest->size - sizeof(struct MemEntry) - size;
         succ->sig  = BITSIG;
+        succ->isfree = 1;
         smallest->size = size;
         smallest->isfree = 0;
         smallest->succ = succ;
@@ -75,10 +76,13 @@ int my_free(void *p, const char *calling_file, const int calling_line)
     struct MemEntry *prev;
     struct MemEntry *succ;
 
+    void *block_start = (void*)&big_block;
+    void *block_end = (&big_block + BLOCKSIZE - sizeof(struct MemEntry) - 1);
+
     pthread_mutex_lock(&my_malloc_mutex);
     ptr = (struct MemEntry*)((char*)p - sizeof(struct MemEntry));
 
-    if ((void*)ptr < (void*)&big_block || (void*)ptr >= (void*)(&big_block + BLOCKSIZE - sizeof(struct MemEntry) - 1))
+    if ((void*)ptr < block_start || (void*)ptr >= block_end)
     {
         // they asked us to free something outside of our memory pool
         fprintf(stderr, "ERROR: calling free on pointer outside bounds of memory pool. %s:%d\n", calling_file, calling_line);
@@ -117,4 +121,25 @@ int my_free(void *p, const char *calling_file, const int calling_line)
 
     pthread_mutex_unlock(&my_malloc_mutex);
     return 0;
+}
+
+void _print_heap()
+{
+    int i=0;
+    struct MemEntry *p;
+
+    p = (struct MemEntry*)big_block;
+    fprintf(stderr, "\n==================\n");
+    do
+    {
+        fprintf(stderr, "|id:       %d\n"
+                        "|size:     %d\n"
+                        "|free:     %c\n"
+                        "|prev:     %ld\n"
+                        "|succ:     %ld\n"
+                        "==================\n", i, p->size, p->isfree + 48, (long int)p->prev, (long int)p->succ);
+        ++i;
+        p = p->succ;
+    } while(p != 0);
+    fprintf(stderr, "\n");
 }

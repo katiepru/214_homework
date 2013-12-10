@@ -63,15 +63,6 @@ int main(int argc, char *argv[])
         printf("[31mERROR: checking for freeing pointer before memory pool fails.[m\n");
         return 1;
     }
-    if (free(mystr - sizeof(struct MemEntry) + BLOCKSIZE + 200) == 1)
-    {
-        printf("[32mError checking for freeing pointer after memory pool works.[m\n");
-    }
-    else
-    {
-        printf("[31mERROR: checking for freeing pointer after memory pool fails.[m\n");
-        return 1;
-    }
 
     /****************************************************************************
     *  Test calling free on pointer inside pool but not returned from malloc.  *
@@ -91,7 +82,13 @@ int main(int argc, char *argv[])
     *  Test running out of available memory.  *
     *******************************************/
     mystr = malloc(BLOCKSIZE - sizeof(struct MemEntry));
-    if (malloc(1) != NULL)
+    if (mystr == NULL)
+    {
+        printf("[31mERROR: An unknown error occured while testing for out of memory.[m\n");
+        return 1;
+    }
+
+    if (malloc(100) == NULL)
     {
         printf("[32mDetecting out of memory works.[m\n");
     }
@@ -100,6 +97,39 @@ int main(int argc, char *argv[])
         printf("[31mDetecting out of memory fails.[m\n");
         return 1;
     }
+    free(mystr);
+
+    /*************************************
+    *  Test for reducing fragmentation  *
+    *************************************/
+    // malloc and free to create one large free chunk at the start of the
+    // pool and one smaller free chunk at the end
+    char *first_half = malloc(BLOCKSIZE / 2 - sizeof( struct MemEntry ));
+    mystr = malloc( BLOCKSIZE / 4 - sizeof( struct MemEntry ) );
+    free(first_half);
+
+    // attempt to allocate a small ammount that will fit in the space at the end
+    char *small_block = malloc(BLOCKSIZE / 4 - sizeof( struct MemEntry ));
+
+    // then try to mallock a larger block that would only fit in the first half
+    char *large_block = malloc(BLOCKSIZE / 2 - sizeof( struct MemEntry ));
+
+    if (small_block == NULL)
+    {
+        printf("[31mERROR: Failed to allocate small block.[m\n");
+        return 1;
+    }
+    if (large_block == NULL)
+    {
+        printf("[31mERROR: Failed to allocate small block.[m\n");
+        return 1;
+    }
+    if (malloc(BLOCKSIZE / 3) != NULL)
+    {
+        printf("[31mERROR: An unknown error occured in the fragmentation test.[m\n");
+        return 1;
+    }
+    printf("[32mPreventing fragmentation works.[m\n");
 
     return 0;
 }

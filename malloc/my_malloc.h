@@ -17,6 +17,8 @@ void* my_malloc(unsigned int, const char*, const int);
 
 int my_free(void*, const char*, const int);
 
+void _print_heap();
+
 struct MemEntry
 {
     struct  MemEntry *prev, *succ;
